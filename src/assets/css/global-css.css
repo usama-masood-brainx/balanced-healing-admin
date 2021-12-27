@@ -1,0 +1,34 @@
+@media (min-width: 1200px) {
+  .loginForm .container {
+    max-width: 1250px;
+  }
+}
+
+.loginForm .mt-n18 {
+  margin-top: -20rem !important;
+}
+
+.authBackground {
+  background-color: #7f7fc1;
+}
+
+.bg-default-login {
+  background-color: #f8f8fe;
+}
+
+.fill-default-login {
+  fill: #f8f8fe;
+}
+
+.default-color {
+  color: #293b92;
+}
+
+.black-color {
+    color: black;
+}
+
+.default-button-background {
+  background-color: #7f7fc1;
+  border-color: #7f7fc1;
+}

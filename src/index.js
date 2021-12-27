@@ -32,11 +32,11 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/vendor/nucleo/css/nucleo.css";
 // core styles
 import "assets/scss/argon-dashboard-pro-react.scss?v1.2.0";
+import "assets/css/global-css.css";
 
 import AdminLayout from "layouts/Admin.js";
 import RTLLayout from "layouts/RTL.js";
 import AuthLayout from "layouts/Auth.js";
-import IndexView from "views/Index.js";
 
 ReactDOM.render(
   <BrowserRouter>
@@ -44,7 +44,7 @@ ReactDOM.render(
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       <Route path="/rtl" render={(props) => <RTLLayout {...props} />} />
       <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
-      <Route path="/" render={(props) => <IndexView {...props} />} />
+      <Route path="/" render={(props) => <AdminLayout {...props} />} />
       <Redirect from="*" to="/" />
     </Switch>
   </BrowserRouter>,

@@ -17,11 +17,6 @@
 import React from "react";
 // react library for routing
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
-
-// core components
-import AuthNavbar from "components/Navbars/AuthNavbar.js";
-import AuthFooter from "components/Footers/AuthFooter.js";
-
 import routes from "routes.js";
 
 function Auth() {
@@ -31,10 +26,10 @@ function Auth() {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     mainContentRef.current.scrollTop = 0;
-    document.body.classList.add("bg-default");
+    document.body.classList.add("bg-default-login");
     // Specify how to clean up after this effect:
     return function cleanup() {
-      document.body.classList.remove("bg-default");
+      document.body.classList.remove("bg-default-login");
     };
   });
   React.useEffect(() => {
@@ -64,13 +59,11 @@ function Auth() {
   return (
     <>
       <div className="main-content" ref={mainContentRef}>
-        <AuthNavbar />
         <Switch>
           {getRoutes(routes)}
           <Redirect from="*" to="/auth/login" />
         </Switch>
       </div>
-      <AuthFooter />
     </>
   );
 }

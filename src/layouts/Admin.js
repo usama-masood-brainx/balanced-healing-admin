@@ -16,19 +16,28 @@
 */
 import React from "react";
 // react library for routing
-import { useLocation, Route, Switch, Redirect } from "react-router-dom";
+import {
+  useLocation,
+  Route,
+  Switch,
+  Redirect,
+  useHistory,
+} from "react-router-dom";
 // core components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
+import { isLoggedIn } from "services/authService";
 
 import routes from "routes.js";
 
 function Admin() {
   const [sidenavOpen, setSidenavOpen] = React.useState(true);
   const location = useLocation();
+  const history = useHistory();
   const mainContentRef = React.useRef(null);
   React.useEffect(() => {
+    !isLoggedIn() && history.push("/auth/login");
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     mainContentRef.current.scrollTop = 0;
