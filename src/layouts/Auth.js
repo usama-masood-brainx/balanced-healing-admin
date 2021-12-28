@@ -17,7 +17,7 @@
 import React from "react";
 // react library for routing
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
-import routes from "routes.js";
+import {routes} from "routes.js";
 
 function Auth() {
   const location = useLocation();

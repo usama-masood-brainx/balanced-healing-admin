@@ -49,7 +49,7 @@ const pagination = paginationFactory({
 
 const { SearchBar } = Search;
 
-function ReactBSTables() {
+function SheetsTable() {
   const [alert, setAlert] = React.useState(null);
   const componentRef = React.useRef(null);
   // this function will copy to clipboard an entire table,
@@ -93,8 +93,7 @@ function ReactBSTables() {
 
   return (
     <>
-      {alert}
-      <SimpleHeader name="React Tables" parentName="Tables" />
+      <SimpleHeader name="Suggestions" />
       <Container className="mt--6" fluid>
         <Row>
           <div className="col">
@@ -291,4 +290,4 @@ function ReactBSTables() {
   );
 }
 
-export default ReactBSTables;
+export default SheetsTable;

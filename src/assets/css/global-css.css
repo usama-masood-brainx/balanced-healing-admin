@@ -25,10 +25,22 @@
 }
 
 .black-color {
-    color: black;
+  color: black;
 }
 
-.default-button-background {
+.default-button-background,
+.default-button-background:hover {
   background-color: #7f7fc1;
   border-color: #7f7fc1;
+}
+
+.navbar-expand-end {
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+}
+
+.meditationImage {
+  height: 3rem;
+  width: 4rem;
+  object-fit: cover;
 }

@@ -40,8 +40,12 @@ import Typography from "views/pages/components/Typography.js";
 import Validation from "views/pages/forms/Validation.js";
 import Vector from "views/pages/maps/Vector.js";
 import Widgets from "views/pages/Widgets.js";
+import MeditationsTable from "views/meditation/Meditations";
+import Meditation from "views/meditation/Meditation";
+import MoodsTable from "views/mood/Moods";
+import SheetsTable from "views/sheet/Sheets";
 
-const routes = [
+export const routes = [
   {
     collapse: true,
     name: "Dashboards",
@@ -300,4 +304,33 @@ const routes = [
   },
 ];
 
-export default routes;
+export const sidebarRoutes = [
+  {
+    path: "/meditations",
+    name: "Meditations",
+    icon: "ni ni-archive-2 text-green",
+    component: MeditationsTable,
+    layout: "/admin",
+  },
+  {
+    path: "/moods",
+    name: "Moods",
+    icon: "ni ni-chart-pie-35 text-info",
+    component: MoodsTable,
+    layout: "/admin",
+  },
+  {
+    path: "/sheets",
+    name: "Suggestion Sheets",
+    icon: "ni ni-calendar-grid-58 text-red",
+    component: SheetsTable,
+    layout: "/admin",
+  },
+  {
+    path: "/meditation/:id",
+    name: "Meditation",
+    icon: "ni ni-calendar-grid-58 text-red",
+    component: Meditation,
+    layout: "/admin",
+  },
+];

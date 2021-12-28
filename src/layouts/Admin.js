@@ -1,21 +1,4 @@
-/*!
-
-=========================================================
-* Argon Dashboard PRO React - v1.2.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-pro-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
-// react library for routing
 import {
   useLocation,
   Route,
@@ -23,13 +6,10 @@ import {
   Redirect,
   useHistory,
 } from "react-router-dom";
-// core components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
-import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import { isLoggedIn } from "services/authService";
-
-import routes from "routes.js";
+import { sidebarRoutes } from "routes.js";
 
 function Admin() {
   const [sidenavOpen, setSidenavOpen] = React.useState(true);
@@ -61,9 +41,13 @@ function Admin() {
     });
   };
   const getBrandText = (path) => {
-    for (let i = 0; i < routes.length; i++) {
-      if (location.pathname.indexOf(routes[i].layout + routes[i].path) !== -1) {
-        return routes[i].name;
+    for (let i = 0; i < sidebarRoutes.length; i++) {
+      if (
+        location.pathname.indexOf(
+          sidebarRoutes[i].layout + sidebarRoutes[i].path
+        ) !== -1
+      ) {
+        return sidebarRoutes[i].name;
       }
     }
     return "Brand";
@@ -88,12 +72,12 @@ function Admin() {
   return (
     <>
       <Sidebar
-        routes={routes}
+        routes={sidebarRoutes.filter((route) => route.name !== "Meditation")}
         toggleSidenav={toggleSidenav}
         sidenavOpen={sidenavOpen}
         logo={{
           innerLink: "/",
-          imgSrc: require("assets/img/brand/argon-react.png").default,
+          imgSrc: require("assets/img/brand/bh_logo.png").default,
           imgAlt: "...",
         }}
       />
@@ -105,10 +89,9 @@ function Admin() {
           brandText={getBrandText(location.pathname)}
         />
         <Switch>
-          {getRoutes(routes)}
-          <Redirect from="*" to="/admin/dashboard" />
+          {getRoutes(sidebarRoutes)}
+          <Redirect from="*" to="/admin/meditations" />
         </Switch>
-        <AdminFooter />
       </div>
       {sidenavOpen ? (
         <div className="backdrop d-xl-none" onClick={toggleSidenav} />

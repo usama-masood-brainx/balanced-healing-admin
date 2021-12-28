@@ -16,12 +16,27 @@ import {
   Col,
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.js";
+import { login } from "services/authService";
+import { useHistory } from "react-router-dom";
 
 function Login() {
+  const history = useHistory();
+
   const [focusedEmail, setfocusedEmail] = React.useState(false);
   const [focusedPassword, setfocusedPassword] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+
+  const handleLogin = async () => {
+    login(email, password).then((login) => {
+      if (login) {
+        history.push("/admin/meditations");
+      } else {
+        console.log("not logged in");
+      }
+    });
+  };
+
   return (
     <>
       <AuthHeader />
@@ -94,6 +109,7 @@ function Login() {
                         className="default-button-background my-4"
                         color="info"
                         type="button"
+                        onClick={handleLogin}
                       >
                         Sign in
                       </Button>
