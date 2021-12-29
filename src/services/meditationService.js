@@ -1,8 +1,8 @@
-import { getCall } from "./APIsService";
+import { getCall, postCall } from "./APIsService";
 
-export const fetchAll = async () => {
+export const fetchAll = async (body) => {
   return new Promise((resolve, reject) => {
-    getCall("/meditation")
+    postCall("/meditation", body)
       .then((data) => resolve(data))
       .catch((err) => reject(err));
   });

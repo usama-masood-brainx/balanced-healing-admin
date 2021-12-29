@@ -72,11 +72,15 @@ function Admin() {
   return (
     <>
       <Sidebar
-        routes={sidebarRoutes.filter((route) => route.name !== "Meditation")}
+        routes={sidebarRoutes.filter(
+          (route) =>
+            route.path !== "/meditation/:id" &&
+            !route.path.startsWith("/add-meditation")
+        )}
         toggleSidenav={toggleSidenav}
         sidenavOpen={sidenavOpen}
         logo={{
-          innerLink: "/",
+          innerLink: "/admin/meditations",
           imgSrc: require("assets/img/brand/bh_logo.png").default,
           imgAlt: "...",
         }}

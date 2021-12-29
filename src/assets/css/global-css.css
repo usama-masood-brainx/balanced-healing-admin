@@ -8,7 +8,8 @@
   margin-top: -20rem !important;
 }
 
-.authBackground {
+.authBackground,
+.bg-info-bh {
   background-color: #7f7fc1;
 }
 
@@ -20,8 +21,18 @@
   fill: #f8f8fe;
 }
 
-.default-color {
+.default-color,
+.icon-color,
+.active.nav-item .nav-link-text {
   color: #293b92;
+}
+
+.nav-link-text {
+  color: black;
+}
+
+.icon-color-light {
+  color: #7f7fc1;
 }
 
 .black-color {
@@ -39,8 +50,105 @@
   justify-content: flex-end;
 }
 
+.navbar-brand-img {
+  max-height: 2.5rem !important;
+}
+
+.navbar-expand-space {
+  justify-content: space-between !important;
+}
+
 .meditationImage {
   height: 3rem;
   width: 4rem;
   object-fit: cover;
+  border-radius: 5%;
+}
+
+.meditationImageDetail {
+  height: 3.9rem;
+  width: 4rem;
+  object-fit: cover;
+}
+
+.action-bg {
+  background-color: #f4f6fb !important;
+}
+
+.rhap_additional-controls,
+.rhap_volume-controls,
+#rhap_current-time {
+  display: none !important;
+}
+
+.rhap_container {
+  background: #f9f9f9 !important;
+  border: 1px solid #dee0e4 !important;
+  border-radius: 5%;
+  box-shadow: none !important;
+}
+
+.rhap_main {
+  flex-direction: row-reverse !important;
+}
+
+.rhap_controls-section {
+  margin-top: 0 !important;
+  flex: none !important;
+}
+
+.rhap_progress-indicator {
+  background: white !important;
+  border: 1px solid black !important;
+  height: 15px !important;
+  width: 15px !important;
+  top: -5px !important;
+  margin-left: -7px !important;
+}
+
+.rhap_progress-filled {
+  background-color: #3a3a73 !important;
+}
+
+.playIcon {
+  color: #3a3a73;
+  font-size: small;
+}
+
+.rhap_main-controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content !important;
+}
+
+.rhap_total-time {
+  font-size: small !important;
+}
+
+.headingColor {
+  color: #67738f;
+}
+
+.active.nav-item {
+  background-color: #f8f8fe;
+}
+
+td {
+  padding: 0.5rem 1rem !important;
+}
+
+.ck.ck-editor__main > .ck-editor__editable:not(.ck-focused),
+.ck.ck-toolbar {
+  border-color: #dee2e6 !important;
+}
+
+.dashedBorder {
+  border: 1px dashed #dee2e6;
+}
+
+.addBtn {
+  color: white;
+  background-color: #7f7fc1;
+  border-color: #7f7fc1;
 }

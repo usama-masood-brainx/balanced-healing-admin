@@ -42,6 +42,7 @@ import Vector from "views/pages/maps/Vector.js";
 import Widgets from "views/pages/Widgets.js";
 import MeditationsTable from "views/meditation/Meditations";
 import Meditation from "views/meditation/Meditation";
+import AddMeditation from "views/meditation/AddMeditation";
 import MoodsTable from "views/mood/Moods";
 import SheetsTable from "views/sheet/Sheets";
 
@@ -321,7 +322,7 @@ export const sidebarRoutes = [
   },
   {
     path: "/sheets",
-    name: "Suggestion Sheets",
+    name: "Suggestions",
     icon: "ni ni-calendar-grid-58 text-red",
     component: SheetsTable,
     layout: "/admin",
@@ -331,6 +332,20 @@ export const sidebarRoutes = [
     name: "Meditation",
     icon: "ni ni-calendar-grid-58 text-red",
     component: Meditation,
+    layout: "/admin",
+  },
+  {
+    path: "/add-meditation/:id",
+    name: "Edit Meditation",
+    icon: "ni ni-calendar-grid-58 text-red",
+    component: AddMeditation,
+    layout: "/admin",
+  },
+  {
+    path: "/add-meditation/",
+    name: "Add Meditation",
+    icon: "ni ni-calendar-grid-58 text-red",
+    component: AddMeditation,
     layout: "/admin",
   },
 ];

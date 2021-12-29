@@ -1,48 +1,12 @@
-/*!
-
-=========================================================
-* Argon Dashboard PRO React - v1.2.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-pro-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { useState } from "react";
-// javascript plugin that creates a sortable object from a dom object
-import List from "list.js";
-// reactstrap components
-import {
-  Badge,
-  Card,
-  CardHeader,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledDropdown,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Progress,
-  Table,
-  Container,
-  Row,
-  Col,
-  UncontrolledTooltip,
-} from "reactstrap";
-// core components
+import { Card, CardHeader, Container, Row, Col } from "reactstrap";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { fetchOne } from "services/meditationService";
 import * as moment from "moment";
 import { useParams } from "react-router-dom";
+import AudioPlayer from "react-h5-audio-player";
+import "react-h5-audio-player/lib/styles.css";
+import { customIcons } from "shared/constants";
 
 function MeditationTable() {
   const { id } = useParams();
@@ -52,7 +16,6 @@ function MeditationTable() {
   }, []);
 
   const fetchMeditation = async () => {
-    console.log(id);
     fetchOne(id)
       .then((data) => setMeditation(data))
       .catch((err) => console.log(err));
@@ -68,15 +31,51 @@ function MeditationTable() {
               <CardHeader className="border-0">
                 <h3 className="mb-0">Meditation Detail</h3>
               </CardHeader>
-              <hr/>
+              <hr className="my-0 mx-2" />
               {meditation && (
                 <div>
                   <Row className="px-5 py-3">
                     <Col lg="6" md="12">
-                      {meditation.title}
+                      <h4 className="headingColor">Title</h4>
+                      <p className="mb-0 text-dark">{meditation.title}</p>
                     </Col>
                     <Col lg="6" md="12">
-                      {meditation.date}
+                      <h4 className="headingColor">Date</h4>
+                      <p className="mb-0 text-dark">
+                        {moment(meditation.date).format("MM/DD/YYYY")}
+                      </p>
+                    </Col>
+                  </Row>
+                  <Row className="px-5 py-3">
+                    <Col lg="12">
+                      <h4 className="headingColor">Description</h4>
+                      <p className="mb-0 text-dark">{meditation.description}</p>
+                    </Col>
+                  </Row>
+                  <Row className="px-5 py-3">
+                    <Col lg="6" md="12">
+                      <h4 className="headingColor mb-3">Attached Sound</h4>
+                      <Row>
+                        <Col lg="8" md="12">
+                          <AudioPlayer
+                            customIcons={customIcons}
+                            showJumpControls={false}
+                            src={meditation.audio}
+                          />
+                        </Col>
+                      </Row>
+                      <small>{/[^/]*$/.exec(meditation.audio)[0]}</small>
+                    </Col>
+                    <Col lg="6" md="12">
+                      <h4 className="headingColor mb-3">
+                        Attached Background Imgae
+                      </h4>
+                      <img
+                        src={meditation.image}
+                        className="meditationImageDetail"
+                      />
+                      <br />
+                      <small>{/[^/]*$/.exec(meditation.image)[0]}</small>
                     </Col>
                   </Row>
                 </div>

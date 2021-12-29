@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import List from "list.js";
 import {
   Card,
   CardHeader,
@@ -22,27 +21,58 @@ import * as moment from "moment";
 import { useHistory } from "react-router-dom";
 
 function MeditationTable() {
+  const pageSize = 10;
   const history = useHistory();
   const [meditations, setMeditations] = useState([]);
+  const [count, setCount] = useState(0);
+  const [currentPage, setPage] = useState(1);
   React.useEffect(() => {
-    fetchMeditations();
+    fetchMeditations({ skip: 0, take: pageSize });
   }, []);
 
-  const fetchMeditations = async () => {
-    fetchAll()
-      .then((data) => setMeditations(data))
+  const fetchMeditations = async (body) => {
+    fetchAll(body)
+      .then((data) => {
+        setMeditations(data.meditations);
+        setCount(data.count);
+      })
       .catch((err) => console.log(err));
+  };
+
+  const pages = () => {
+    let pagesArr = [];
+    for (let i = 1; i <= Math.ceil(count / pageSize); i++) {
+      pagesArr.push(
+        <PaginationItem className={currentPage === i ? "active" : ""}>
+          <PaginationLink href="#pablo" onClick={(e) => handlePageClick(e, i)}>
+            {i}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+    return pagesArr;
+  };
+
+  const handlePageClick = (e, pageNumber) => {
+    e.preventDefault();
+    fetchMeditations({ skip: (pageNumber - 1) * pageSize, take: pageSize });
+    setPage(pageNumber);
   };
 
   return (
     <>
-      <SimpleHeader name="Meditations" parentName="Tables" />
+      <SimpleHeader name="Meditations" />
       <Container className="mt--6" fluid>
         <Row>
           <div className="col">
             <Card>
               <CardHeader className="border-0">
-                <h3 className="mb-0">Light table</h3>
+                <h3 className="d-inline-block mr-4">Search: </h3>
+                <input
+                  className="d-inline-block p-2"
+                  type={"text"}
+                  placeholder="Search Title"
+                />
               </CardHeader>
               <div className="table-responsive">
                 <Table className="align-items-center table-flush">
@@ -60,31 +90,40 @@ function MeditationTable() {
                   <tbody className="list">
                     {meditations.map((meditation, index) => (
                       <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{meditation.title}</td>
                         <td>
-                          <img
-                            className="meditationImage"
-                            alt="..."
-                            src={meditation.image}
-                          />
+                          <div className="default-color d-flex justify-content-center align-items-center">
+                            {index + 1}
+                          </div>
                         </td>
-                        <td>{moment(meditation.date).format("DD/MM/YYYY")}</td>
-                        <td>{meditation.description}</td>
+                        <td className="default-color">{meditation.title}</td>
+                        <td>
+                          <div className="d-flex justify-content-center align-items-center">
+                            <img
+                              className="meditationImage"
+                              alt="..."
+                              src={meditation.image}
+                            />
+                          </div>
+                        </td>
+                        <td>{moment(meditation.date).format("MM/DD/YYYY")}</td>
+                        <td>
+                          {meditation.description.length > 90
+                            ? meditation.description.substring(0, 90) + "..."
+                            : meditation.description}
+                        </td>
                         <td>{/[^/]*$/.exec(meditation.audio)[0]}</td>
                         <td>
                           <UncontrolledDropdown>
                             <DropdownToggle
-                              className="btn-icon-only text-light"
+                              className="btn-icon-only text-light action-bg"
                               color=""
                               role="button"
                               size="sm"
                             >
-                              <i className="fas fa-ellipsis-v" />
+                              <i className="fas fa-ellipsis-h icon-color" />
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-arrow" right>
                               <DropdownItem
-                                href="#pablo"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   history.push(
@@ -98,18 +137,19 @@ function MeditationTable() {
                                 </div>
                               </DropdownItem>
                               <DropdownItem
-                                href="#pablo"
-                                onClick={(e) => e.preventDefault()}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  history.push(
+                                    `/admin/add-meditation/${meditation._id}`
+                                  );
+                                }}
                               >
                                 <div className="d-flex align-items-center justify-content-start">
                                   <i className="fa fa-pencil-alt mr-3"></i>
                                   <div>Edit</div>
                                 </div>
                               </DropdownItem>
-                              <DropdownItem
-                                href="#pablo"
-                                onClick={(e) => e.preventDefault()}
-                              >
+                              <DropdownItem onClick={(e) => e.preventDefault()}>
                                 <div className="d-flex align-items-center justify-content-start">
                                   <i className="fa fa-times mr-3"></i>
                                   <div>Delete</div>
@@ -130,44 +170,29 @@ function MeditationTable() {
                     className="pagination justify-content-end mb-0"
                     listClassName="justify-content-end mb-0"
                   >
-                    <PaginationItem className="disabled">
+                    <PaginationItem
+                      className={currentPage === 1 ? "disabled" : ""}
+                    >
                       <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
+                        onClick={(e) => handlePageClick(e, currentPage - 1)}
                         tabIndex="-1"
                       >
                         <i className="fas fa-angle-left" />
                         <span className="sr-only">Previous</span>
                       </PaginationLink>
                     </PaginationItem>
-                    <PaginationItem className="active">
+                    {pages().map((page, index) => (
+                      <div key={index}>{page}</div>
+                    ))}
+                    <PaginationItem
+                      className={
+                        currentPage >= Math.ceil(count / pageSize)
+                          ? "disabled"
+                          : ""
+                      }
+                    >
                       <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        2 <span className="sr-only">(current)</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        3
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}
+                        onClick={(e) => handlePageClick(e, currentPage + 1)}
                       >
                         <i className="fas fa-angle-right" />
                         <span className="sr-only">Next</span>
