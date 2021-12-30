@@ -1,11 +1,14 @@
 import PropTypes from "prop-types";
-import { Container, Row, Col } from "reactstrap";
+import { Container, Row, Col, Modal } from "reactstrap";
 import { useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
+import AddMood from "views/mood/AddMood";
+import AddSheet from "views/sheet/AddSheet";
 
-function TimelineHeader({ name }) {
+function TimelineHeader({ name, updateList }) {
   const history = useHistory();
   const [showAddBtn, setAddBtn] = useState(false);
+  const [moodModal, showMoodModal] = useState(false);
 
   useEffect(() => {
     if (
@@ -20,7 +23,16 @@ function TimelineHeader({ name }) {
   const handleAddClick = () => {
     if (history.location.pathname === "/admin/meditations") {
       history.push("/admin/add-meditation");
+    } else if (history.location.pathname === "/admin/moods") {
+      showMoodModal(true);
+    } else if (history.location.pathname === "/admin/sheets") {
+      history.push("/admin/add-sheet");
     }
+  };
+
+  const handleModalClose = (value) => {
+    updateList();
+    showMoodModal(value);
   };
 
   return (
@@ -47,6 +59,11 @@ function TimelineHeader({ name }) {
           </div>
         </Container>
       </div>
+      <AddMood
+        moodModal={moodModal}
+        showMoodModal={showMoodModal}
+        handleModalClose={handleModalClose}
+      />
     </>
   );
 }

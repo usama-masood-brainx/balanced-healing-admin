@@ -1,287 +1,196 @@
-import React from "react";
-import ReactToPrint from "react-to-print";
-import BootstrapTable from "react-bootstrap-table-next";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
-import ReactBSAlert from "react-bootstrap-sweetalert";
+import React, { useState } from "react";
 import {
-  Button,
-  ButtonGroup,
   Card,
   CardHeader,
+  CardFooter,
+  DropdownMenu,
+  DropdownItem,
+  DropdownToggle,
+  UncontrolledDropdown,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  Table,
   Container,
   Row,
-  Col,
-  UncontrolledTooltip,
+  Input,
 } from "reactstrap";
 // core components
 import SimpleHeader from "components/Headers/SimpleHeader.js";
+import { fetchAll, remove } from "services/sheetService";
+import { useHistory } from "react-router-dom";
 
-import { dataTable } from "variables/general";
+function MoodsTable() {
+  const pageSize = 10;
+  const history = useHistory();
+  const [sheets, setSheets] = useState([]);
+  const [count, setCount] = useState(0);
+  const [currentPage, setPage] = useState(1);
+  React.useEffect(() => {
+    fetchSheets({ skip: 0, take: pageSize });
+  }, []);
 
-const pagination = paginationFactory({
-  page: 1,
-  alwaysShowAllBtns: true,
-  showTotal: true,
-  withFirstAndLast: false,
-  sizePerPageRenderer: ({ options, currSizePerPage, onSizePerPageChange }) => (
-    <div className="dataTables_length" id="datatable-basic_length">
-      <label>
-        Show{" "}
-        {
-          <select
-            name="datatable-basic_length"
-            aria-controls="datatable-basic"
-            className="form-control form-control-sm"
-            onChange={(e) => onSizePerPageChange(e.target.value)}
-          >
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-        }{" "}
-        entries.
-      </label>
-    </div>
-  ),
-});
+  const fetchSheets = async (body) => {
+    fetchAll(body)
+      .then((data) => {
+        setSheets(data.sheets);
+        setCount(data.count);
+      })
+      .catch((err) => console.log(err));
+  };
 
-const { SearchBar } = Search;
-
-function SheetsTable() {
-  const [alert, setAlert] = React.useState(null);
-  const componentRef = React.useRef(null);
-  // this function will copy to clipboard an entire table,
-  // so you can paste it inside an excel or csv file
-  const copyToClipboardAsTable = (el) => {
-    var body = document.body,
-      range,
-      sel;
-    if (document.createRange && window.getSelection) {
-      range = document.createRange();
-      sel = window.getSelection();
-      sel.removeAllRanges();
-      try {
-        range.selectNodeContents(el);
-        sel.addRange(range);
-      } catch (e) {
-        range.selectNode(el);
-        sel.addRange(range);
-      }
-      document.execCommand("copy");
-    } else if (body.createTextRange) {
-      range = body.createTextRange();
-      range.moveToElementText(el);
-      range.select();
-      range.execCommand("Copy");
+  const pages = () => {
+    let pagesArr = [];
+    for (let i = 1; i <= Math.ceil(count / pageSize); i++) {
+      pagesArr.push(
+        <PaginationItem className={currentPage === i ? "active" : ""}>
+          <PaginationLink href="#pablo" onClick={(e) => handlePageClick(e, i)}>
+            {i}
+          </PaginationLink>
+        </PaginationItem>
+      );
     }
-    setAlert(
-      <ReactBSAlert
-        success
-        style={{ display: "block", marginTop: "-100px" }}
-        title="Good job!"
-        onConfirm={() => setAlert(null)}
-        onCancel={() => setAlert(null)}
-        confirmBtnBsStyle="info"
-        btnSize=""
-      >
-        Copied to clipboard!
-      </ReactBSAlert>
-    );
+    return pagesArr;
+  };
+
+  const handlePageClick = (e, pageNumber) => {
+    e.preventDefault();
+    fetchSheets({ skip: (pageNumber - 1) * pageSize, take: pageSize });
+    setPage(pageNumber);
   };
 
   return (
     <>
-      <SimpleHeader name="Suggestions" />
+      <SimpleHeader name="Sheets" />
       <Container className="mt--6" fluid>
         <Row>
           <div className="col">
             <Card>
-              <ToolkitProvider
-                data={dataTable}
-                keyField="name"
-                columns={[
-                  {
-                    dataField: "name",
-                    text: "Name",
-                    sort: true,
-                  },
-                  {
-                    dataField: "position",
-                    text: "Position",
-                    sort: true,
-                  },
-                  {
-                    dataField: "office",
-                    text: "Office",
-                    sort: true,
-                  },
-                  {
-                    dataField: "age",
-                    text: "Age",
-                    sort: true,
-                  },
-                  {
-                    dataField: "start_date",
-                    text: "Start date",
-                    sort: true,
-                  },
-                  {
-                    dataField: "salary",
-                    text: "Salary",
-                    sort: true,
-                  },
-                ]}
-                search
-              >
-                {(props) => (
-                  <div className="py-4 table-responsive">
-                    <div
-                      id="datatable-basic_filter"
-                      className="dataTables_filter px-4 pb-1"
-                    >
-                      <label>
-                        Search:
-                        <SearchBar
-                          className="form-control-sm"
-                          placeholder=""
-                          {...props.searchProps}
-                        />
-                      </label>
-                    </div>
-                    <BootstrapTable
-                      {...props.baseProps}
-                      bootstrap4={true}
-                      pagination={pagination}
-                      bordered={false}
-                    />
-                  </div>
-                )}
-              </ToolkitProvider>
-            </Card>
-            <Card>
-              <CardHeader>
-                <h3 className="mb-0">Action buttons</h3>
-                <p className="text-sm mb-0">
-                  This is an exmaple of data table using the well known
-                  react-bootstrap-table2 plugin. This is a minimal setup in
-                  order to get started fast.
-                </p>
+              <CardHeader className="border-0">
+                <h3 className="d-inline-block mr-4">Search: </h3>
+                <Input
+                  className="d-inline-block searchBox"
+                  placeholder="Search Title"
+                  type="text"
+                />
               </CardHeader>
-              <ToolkitProvider
-                data={dataTable}
-                keyField="name"
-                columns={[
-                  {
-                    dataField: "name",
-                    text: "Name",
-                    sort: true,
-                  },
-                  {
-                    dataField: "position",
-                    text: "Position",
-                    sort: true,
-                  },
-                  {
-                    dataField: "office",
-                    text: "Office",
-                    sort: true,
-                  },
-                  {
-                    dataField: "age",
-                    text: "Age",
-                    sort: true,
-                  },
-                  {
-                    dataField: "start_date",
-                    text: "Start date",
-                    sort: true,
-                  },
-                  {
-                    dataField: "salary",
-                    text: "Salary",
-                    sort: true,
-                  },
-                ]}
-                search
-              >
-                {(props) => (
-                  <div className="py-4 table-responsive">
-                    <Container fluid>
-                      <Row>
-                        <Col xs={12} sm={6}>
-                          <ButtonGroup>
-                            <Button
-                              className="buttons-copy buttons-html5"
-                              color="default"
+              <div className="table-responsive">
+                <Table className="align-items-center table-flush">
+                  <thead className="thead-light">
+                    <tr>
+                      <th scope="col">Sr#</th>
+                      <th scope="col">Title</th>
+                      <th scope="col">Description</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="list">
+                    {sheets.map((sheet, index) => (
+                      <tr key={index}>
+                        <td>
+                          <div className="default-color pl-4">{index + 1}</div>
+                        </td>
+                        <td className="default-color">{sheet.title}</td>
+                        <td>
+                          {sheet.detail.length > 90
+                            ? sheet.detail.substring(0, 90) + "..."
+                            : sheet.detail}
+                        </td>
+                        <td className="d-flex align-items-center justify-content-end pr-6">
+                          <UncontrolledDropdown>
+                            <DropdownToggle
+                              className="btn-icon-only text-light action-bg"
+                              color=""
+                              role="button"
                               size="sm"
-                              id="copy-tooltip"
-                              onClick={() =>
-                                copyToClipboardAsTable(
-                                  document.getElementById("react-bs-table")
-                                )
-                              }
                             >
-                              <span>Copy</span>
-                            </Button>
-                            <ReactToPrint
-                              trigger={() => (
-                                <Button
-                                  color="default"
-                                  size="sm"
-                                  className="buttons-copy buttons-html5"
-                                  id="print-tooltip"
-                                >
-                                  Print
-                                </Button>
-                              )}
-                              content={() => componentRef.current}
-                            />
-                          </ButtonGroup>
-                          <UncontrolledTooltip
-                            placement="top"
-                            target="print-tooltip"
-                          >
-                            This will open a print page with the visible rows of
-                            the table.
-                          </UncontrolledTooltip>
-                          <UncontrolledTooltip
-                            placement="top"
-                            target="copy-tooltip"
-                          >
-                            This will copy to your clipboard the visible rows of
-                            the table.
-                          </UncontrolledTooltip>
-                        </Col>
-                        <Col xs={12} sm={6}>
-                          <div
-                            id="datatable-basic_filter"
-                            className="dataTables_filter px-4 pb-1 float-right"
-                          >
-                            <label>
-                              Search:
-                              <SearchBar
-                                className="form-control-sm"
-                                placeholder=""
-                                {...props.searchProps}
-                              />
-                            </label>
-                          </div>
-                        </Col>
-                      </Row>
-                    </Container>
-                    <BootstrapTable
-                      ref={componentRef}
-                      {...props.baseProps}
-                      bootstrap4={true}
-                      pagination={pagination}
-                      bordered={false}
-                      id="react-bs-table"
-                    />
-                  </div>
-                )}
-              </ToolkitProvider>
+                              <i className="fas fa-ellipsis-h icon-color" />
+                            </DropdownToggle>
+                            <DropdownMenu className="dropdown-menu-arrow" right>
+                              <DropdownItem
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  history.push(`/admin/sheet/${sheet._id}`);
+                                }}
+                              >
+                                <div className="d-flex align-items-center justify-content-start">
+                                  <i className="fa fa-eye mr-3"></i>
+                                  <div>View</div>
+                                </div>
+                              </DropdownItem>
+                              <DropdownItem
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  history.push(`/admin/add-sheet/${sheet._id}`);
+                                }}
+                              >
+                                <div className="d-flex align-items-center justify-content-start">
+                                  <i className="fa fa-pencil-alt mr-3"></i>
+                                  <div>Edit</div>
+                                </div>
+                              </DropdownItem>
+                              <DropdownItem
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  remove(sheet._id).then(() =>
+                                    fetchSheets({
+                                      skip: (currentPage - 1) * pageSize,
+                                      take: pageSize,
+                                    }).catch((err) => console.log(err))
+                                  );
+                                }}
+                              >
+                                <div className="d-flex align-items-center justify-content-start">
+                                  <i className="fa fa-times mr-3"></i>
+                                  <div>Delete</div>
+                                </div>
+                              </DropdownItem>
+                            </DropdownMenu>
+                          </UncontrolledDropdown>
+                        </td>
+                      </tr>
+                    ))}
+                    <tr></tr>
+                  </tbody>
+                </Table>
+              </div>
+              <CardFooter className="py-4">
+                <nav aria-label="...">
+                  <Pagination
+                    className="pagination justify-content-end mb-0"
+                    listClassName="justify-content-end mb-0"
+                  >
+                    <PaginationItem
+                      className={currentPage === 1 ? "disabled" : ""}
+                    >
+                      <PaginationLink
+                        onClick={(e) => handlePageClick(e, currentPage - 1)}
+                        tabIndex="-1"
+                      >
+                        <i className="fas fa-angle-left" />
+                        <span className="sr-only">Previous</span>
+                      </PaginationLink>
+                    </PaginationItem>
+                    {pages().map((page, index) => (
+                      <div key={index}>{page}</div>
+                    ))}
+                    <PaginationItem
+                      className={
+                        currentPage >= Math.ceil(count / pageSize)
+                          ? "disabled"
+                          : ""
+                      }
+                    >
+                      <PaginationLink
+                        onClick={(e) => handlePageClick(e, currentPage + 1)}
+                      >
+                        <i className="fas fa-angle-right" />
+                        <span className="sr-only">Next</span>
+                      </PaginationLink>
+                    </PaginationItem>
+                  </Pagination>
+                </nav>
+              </CardFooter>
             </Card>
           </div>
         </Row>
@@ -290,4 +199,4 @@ function SheetsTable() {
   );
 }
 
-export default SheetsTable;
+export default MoodsTable;

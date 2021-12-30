@@ -12,3 +12,8 @@ export const defaultMeditation = {
   audio: "",
   image: "",
 };
+
+export const defaultSheet = {
+  title: "",
+  detail: "",
+};

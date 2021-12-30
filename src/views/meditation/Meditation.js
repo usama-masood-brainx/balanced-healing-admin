@@ -8,7 +8,7 @@ import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { customIcons } from "shared/constants";
 
-function MeditationTable() {
+function Meditation() {
   const { id } = useParams();
   const [meditation, setMeditation] = useState({});
   React.useEffect(() => {
@@ -23,7 +23,7 @@ function MeditationTable() {
 
   return (
     <>
-      <SimpleHeader name="Meditations" parentName="Tables" />
+      <SimpleHeader name="Meditation" />
       <Container className="mt--6" fluid>
         <Row>
           <div className="col-lg-7 col-md-12">
@@ -88,4 +88,4 @@ function MeditationTable() {
   );
 }
 
-export default MeditationTable;
+export default Meditation;

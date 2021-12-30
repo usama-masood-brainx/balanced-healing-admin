@@ -13,10 +13,11 @@ import {
   Table,
   Container,
   Row,
+  Input,
 } from "reactstrap";
 // core components
 import SimpleHeader from "components/Headers/SimpleHeader.js";
-import { fetchAll } from "services/meditationService";
+import { fetchAll, remove } from "services/meditationService";
 import * as moment from "moment";
 import { useHistory } from "react-router-dom";
 
@@ -68,10 +69,10 @@ function MeditationTable() {
             <Card>
               <CardHeader className="border-0">
                 <h3 className="d-inline-block mr-4">Search: </h3>
-                <input
-                  className="d-inline-block p-2"
-                  type={"text"}
+                <Input
+                  className="d-inline-block searchBox"
                   placeholder="Search Title"
+                  type="text"
                 />
               </CardHeader>
               <div className="table-responsive">
@@ -97,7 +98,7 @@ function MeditationTable() {
                         </td>
                         <td className="default-color">{meditation.title}</td>
                         <td>
-                          <div className="d-flex justify-content-center align-items-center">
+                          <div>
                             <img
                               className="meditationImage"
                               alt="..."
@@ -149,7 +150,17 @@ function MeditationTable() {
                                   <div>Edit</div>
                                 </div>
                               </DropdownItem>
-                              <DropdownItem onClick={(e) => e.preventDefault()}>
+                              <DropdownItem
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  remove(meditation._id).then(() =>
+                                    fetchMeditations({
+                                      skip: (currentPage - 1) * pageSize,
+                                      take: pageSize,
+                                    }).catch((err) => console.log(err))
+                                  );
+                                }}
+                              >
                                 <div className="d-flex align-items-center justify-content-start">
                                   <i className="fa fa-times mr-3"></i>
                                   <div>Delete</div>

@@ -45,6 +45,8 @@ import Meditation from "views/meditation/Meditation";
 import AddMeditation from "views/meditation/AddMeditation";
 import MoodsTable from "views/mood/Moods";
 import SheetsTable from "views/sheet/Sheets";
+import AddSheet from "views/sheet/AddSheet";
+import Sheet from "views/sheet/Sheet";
 
 export const routes = [
   {
@@ -346,6 +348,27 @@ export const sidebarRoutes = [
     name: "Add Meditation",
     icon: "ni ni-calendar-grid-58 text-red",
     component: AddMeditation,
+    layout: "/admin",
+  },
+  {
+    path: "/sheet/:id",
+    name: "Sheet",
+    icon: "ni ni-calendar-grid-58 text-red",
+    component: Sheet,
+    layout: "/admin",
+  },
+  {
+    path: "/add-sheet/:id",
+    name: "Edit Sheet",
+    icon: "ni ni-calendar-grid-58 text-red",
+    component: AddSheet,
+    layout: "/admin",
+  },
+  {
+    path: "/add-sheet/",
+    name: "Add Sheet",
+    icon: "ni ni-calendar-grid-58 text-red",
+    component: AddSheet,
     layout: "/admin",
   },
 ];

@@ -152,3 +152,24 @@ td {
   background-color: #7f7fc1;
   border-color: #7f7fc1;
 }
+
+.dropzone .dz-button {
+  color: black;
+  background: white;
+}
+
+.dz-message {
+  padding: 1rem;
+}
+
+.searchBox {
+  width: 250px;
+}
+
+.ck-editor__editable {
+  min-height: 200px;
+}
+
+.dz-preview {
+  display: none;
+}

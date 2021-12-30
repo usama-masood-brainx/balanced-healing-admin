@@ -30,8 +30,10 @@ function AdminNavbar({ theme }) {
 
   const displayBackButton = (location) => {
     if (
+      location.pathname.startsWith("/admin/sheet/") ||
       location.pathname.startsWith("/admin/meditation/") ||
-      location.pathname.startsWith("/admin/add-meditation")
+      location.pathname.startsWith("/admin/add-meditation") ||
+      location.pathname.startsWith("/admin/add-sheet")
     ) {
       setBack(true);
     } else {
@@ -53,7 +55,13 @@ function AdminNavbar({ theme }) {
           <div
             role="button"
             className="mx-5 text-white"
-            onClick={() => history.push("/admin/meditations")}
+            onClick={() => {
+              if (history.location.pathname.startsWith("/admin/meditation/")) {
+                history.push("/admin/meditations");
+              } else {
+                history.push("/admin/sheets");
+              }
+            }}
           >
             <i className="fa fa-long-arrow-alt-left mr-3"></i>Back
           </div>

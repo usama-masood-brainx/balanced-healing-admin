@@ -74,8 +74,10 @@ function Admin() {
       <Sidebar
         routes={sidebarRoutes.filter(
           (route) =>
+            route.path !== "/sheet/:id" &&
             route.path !== "/meditation/:id" &&
-            !route.path.startsWith("/add-meditation")
+            !route.path.startsWith("/add-meditation") &&
+            !route.path.startsWith("/add-sheet")
         )}
         toggleSidenav={toggleSidenav}
         sidenavOpen={sidenavOpen}

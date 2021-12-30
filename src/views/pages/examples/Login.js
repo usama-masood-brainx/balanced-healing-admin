@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classnames from "classnames";
 import {
   Button,
@@ -16,11 +16,17 @@ import {
   Col,
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.js";
-import { login } from "services/authService";
+import { login, verifyLogin } from "services/authService";
 import { useHistory } from "react-router-dom";
 
 function Login() {
   const history = useHistory();
+
+  useEffect(() => {
+    verifyLogin().then(
+      (verified) => verified && history.push("/admin/meditations")
+    );
+  }, []);
 
   const [focusedEmail, setfocusedEmail] = React.useState(false);
   const [focusedPassword, setfocusedPassword] = React.useState(false);

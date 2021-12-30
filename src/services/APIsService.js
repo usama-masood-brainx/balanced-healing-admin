@@ -56,3 +56,33 @@ export const authorizedPostCall = async (url, data) => {
       .catch((err) => reject(err));
   });
 };
+
+export const authorizedPutCall = async (url, data) => {
+  return new Promise((resolve, reject) => {
+    authorizedAxios
+      .put(baseURL + url, data, {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("access_token"),
+        },
+      })
+      .then((data) => {
+        resolve(data.data);
+      })
+      .catch((err) => reject(err));
+  });
+};
+
+export const authorizedDeleteCall = async (url) => {
+  return new Promise((resolve, reject) => {
+    authorizedAxios
+      .delete(baseURL + url, {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("access_token"),
+        },
+      })
+      .then((data) => {
+        resolve(data.data);
+      })
+      .catch((err) => reject(err));
+  });
+};
