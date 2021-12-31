@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { refreshToken } from "./authService";
-const baseURL = "http://localhost:5000";
+const baseURL = process.env.REACT_APP_BACKEND_URL;
 
 const authorizedAxios = axios.create();
 

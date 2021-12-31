@@ -58,9 +58,7 @@ export const refreshToken = async () => {
 export const verifyLogin = async () => {
   return new Promise((resolve, reject) => {
     !localStorage.getItem("refresh_token") && resolve(false);
-    authorizedPostCall("/auth/verify-login", {
-      token: localStorage.getItem("refresh_token"),
-    })
+    authorizedPostCall("/auth/verify-login")
       .then((data) => {
         resolve(data);
       })

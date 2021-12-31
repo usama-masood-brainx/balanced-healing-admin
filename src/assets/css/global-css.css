@@ -138,6 +138,13 @@ td {
   padding: 0.5rem 1rem !important;
 }
 
+.is-invalid .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused),
+.is-invalid .ck.ck-toolbar,
+.dropzone.invalid-dropzone .dz-message,
+.rdt.is-invalid input {
+  border-color: #fb6340 !important;
+}
+
 .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused),
 .ck.ck-toolbar {
   border-color: #dee2e6 !important;

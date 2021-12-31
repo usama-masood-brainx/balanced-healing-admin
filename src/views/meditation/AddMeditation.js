@@ -2,23 +2,28 @@ import React, { useEffect, useRef, useState } from "react";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { Card, CardHeader, Container, Row, Col, Input, Form } from "reactstrap";
 import { useParams } from "react-router-dom";
-import { fetchOne } from "services/meditationService";
+import { fetchOne, add, update } from "services/meditationService";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import * as moment from "moment";
 import { customIcons, defaultMeditation } from "shared/constants";
+import { uploadFile } from "services/s3Service";
 import ReactDatetime from "react-datetime";
 import Dropzone from "dropzone";
 import classnames from "classnames";
+import { useHistory } from "react-router-dom";
 Dropzone.autoDiscover = false;
 
 const AddMeditation = () => {
+  const history = useHistory();
   const editorRef = useRef();
   const { CKEditor, ClassicEditor } = editorRef.current || {};
-  let imageDropzone, audioDropzone;
+  const [editorLoaded, setEditorLoaded] = useState(false);
 
   const { id } = useParams();
-  const [editorLoaded, setEditorLoaded] = useState(false);
+
+  //form values states
+  const [meditation, setMeditation] = useState(defaultMeditation);
   const [title, setTitle] = useState(defaultMeditation.title);
   const [date, setDate] = useState(defaultMeditation.date);
   const [desc, setDesc] = useState(defaultMeditation.description);
@@ -26,64 +31,64 @@ const AddMeditation = () => {
   const [audio, setAudio] = useState(defaultMeditation.audio);
   const [audioName, setAudioName] = useState("");
   const [imageName, setImageName] = useState("");
+  const [currentImageFile, setCurrentImageFile] = useState(false);
+  const [currentAudioFile, setCurrentAudioFile] = useState(false);
 
-  let currentImageFile = undefined;
-  let currentAudioFile = undefined;
+  //validation states
+  const [showError, setErrorMessage] = useState(false);
+  const [imageChanged, setImageChanged] = useState(false);
+  const [audioChanged, setAudioChanged] = useState(false);
 
   const initializeDropzone = () => {
-    imageDropzone = new Dropzone(
-      document.getElementById("dropzone-single-image"),
-      {
-        url: "/",
-        thumbnailWidth: null,
-        dictDefaultMessage:
-          '<i class="ni ni-cloud-upload-96 icon-color text-xl"></i><p>Click to upload or Drop file here</p>',
-        thumbnailHeight: null,
-        maxFiles: 1,
-        acceptedFiles: "image/*",
-        init: function () {
-          this.on("addedfile", function (file) {
-            if (currentImageFile) {
-              this.removeFile(currentImageFile);
-            }
-            setImageName(JSON.parse(JSON.stringify(file)).upload.filename);
-            currentImageFile = file;
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function (e) {
-              setImage(e.target.result);
-            };
-          });
-        },
-      }
-    );
+    new Dropzone(document.getElementById("dropzone-single-image"), {
+      url: "#",
+      thumbnailWidth: null,
+      dictDefaultMessage:
+        '<i class="ni ni-cloud-upload-96 icon-color text-xl"></i><p>Click to upload or Drop file here</p>',
+      thumbnailHeight: null,
+      maxFiles: 1,
+      acceptedFiles: "image/*",
+      init: function () {
+        this.on("addedfile", function (file) {
+          setImageChanged(true);
+          if (currentImageFile) {
+            this.removeFile(currentImageFile);
+          }
+          setImageName(JSON.parse(JSON.stringify(file)).upload.filename);
+          var reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = function (e) {
+            setImage(e.target.result);
+            setCurrentImageFile(dataURLtoFile(e.target.result, "name"));
+          };
+        });
+      },
+    });
 
-    audioDropzone = new Dropzone(
-      document.getElementById("dropzone-single-audio"),
-      {
-        url: "/",
-        thumbnailWidth: null,
-        dictDefaultMessage:
-          '<i class="ni ni-cloud-upload-96 icon-color text-xl"></i><p>Click to upload or Drop file here</p>',
-        thumbnailHeight: null,
-        maxFiles: 1,
-        acceptedFiles: "audio/*",
-        init: function () {
-          this.on("addedfile", function (file) {
-            if (currentAudioFile) {
-              this.removeFile(currentAudioFile);
-            }
-            setAudioName(JSON.parse(JSON.stringify(file)).upload.filename);
-            currentAudioFile = file;
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function (e) {
-              setAudio(e.target.result);
-            };
-          });
-        },
-      }
-    );
+    new Dropzone(document.getElementById("dropzone-single-audio"), {
+      url: "#",
+      thumbnailWidth: null,
+      dictDefaultMessage:
+        '<i class="ni ni-cloud-upload-96 icon-color text-xl"></i><p>Click to upload or Drop file here</p>',
+      thumbnailHeight: null,
+      maxFiles: 1,
+      acceptedFiles: "audio/*",
+      init: function () {
+        this.on("addedfile", function (file) {
+          setAudioChanged(true);
+          if (currentAudioFile) {
+            this.removeFile(currentAudioFile);
+          }
+          setAudioName(JSON.parse(JSON.stringify(file)).upload.filename);
+          var reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = function (e) {
+            setAudio(e.target.result);
+            setCurrentAudioFile(dataURLtoFile(e.target.result, "name"));
+          };
+        });
+      },
+    });
   };
 
   useEffect(() => {
@@ -99,6 +104,7 @@ const AddMeditation = () => {
   const fetchMeditation = async () => {
     fetchOne(id)
       .then((data) => {
+        setMeditation(data);
         setDesc(data.description);
         setTitle(data.title);
         setDate(data.date);
@@ -108,6 +114,81 @@ const AddMeditation = () => {
         setImageName(/[^/]*$/.exec(data.image)[0]);
       })
       .catch((err) => console.log(err));
+  };
+
+  const handleSubmit = async (e) => {
+    try {
+      if (
+        meditation.title === title &&
+        meditation.date === date &&
+        meditation.description === desc &&
+        meditation.audio === audio &&
+        meditation.image === image
+      ) {
+        history.push("/admin/meditations");
+        return;
+      }
+      if (
+        !title ||
+        !date ||
+        !desc ||
+        (imageChanged && !currentImageFile) ||
+        (audioChanged && !currentAudioFile) ||
+        (!imageChanged && !image) ||
+        (!audioChanged && !audio)
+      ) {
+        setErrorMessage(true);
+        return;
+      }
+      console.log("STARTED!");
+      let uploadedImage = image;
+      let uploadedAudio = audio;
+      if (imageChanged) {
+        uploadedImage = await uploadFile(currentImageFile);
+      }
+      if (audioChanged) {
+        uploadedAudio = await uploadFile(currentAudioFile);
+      }
+      if (id) {
+        await update(id, {
+          title,
+          date: moment(date).format("YYYY-MM-DD"),
+          description: desc,
+          image: uploadedImage,
+          audio: uploadedAudio,
+        });
+      } else {
+        console.log({
+          title,
+          date: moment(date).format("YYYY-MM-DD"),
+          description: desc,
+          image: uploadedImage,
+          audio: uploadedAudio,
+        });
+        await add({
+          title,
+          date: moment(date).format("YYYY-MM-DD"),
+          description: desc,
+          image: uploadedImage ? uploadedImage : image,
+          audio: uploadedAudio ? uploadedAudio : audio,
+        });
+      }
+      console.log("FINISHED");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const dataURLtoFile = (dataUrl, fileName) => {
+    var arr = dataUrl.split(","),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], fileName, { type: mime });
   };
 
   return (
@@ -127,6 +208,7 @@ const AddMeditation = () => {
                     <Col lg="6" md="12">
                       <h4 className="headingColor">Title</h4>
                       <Input
+                        className={!title && showError ? "is-invalid" : ""}
                         placeholder="Add Title"
                         type="text"
                         value={title}
@@ -136,6 +218,7 @@ const AddMeditation = () => {
                     <Col lg="6" md="12">
                       <h4 className="headingColor">Date</h4>
                       <ReactDatetime
+                        className={!date && showError ? "is-invalid" : ""}
                         inputProps={{
                           placeholder: "Add Date",
                         }}
@@ -148,16 +231,18 @@ const AddMeditation = () => {
                   <Row className="px-5 py-3">
                     <Col lg="12">
                       <h4 className="headingColor">Description</h4>
-                      {editorLoaded && (
-                        <CKEditor
-                          editor={ClassicEditor}
-                          data={desc}
-                          onChange={(event, editor) => {
-                            const data = editor.getData();
-                            setDesc(data);
-                          }}
-                        />
-                      )}
+                      <div className={!desc && showError ? "is-invalid" : ""}>
+                        {editorLoaded && (
+                          <CKEditor
+                            editor={ClassicEditor}
+                            data={desc}
+                            onChange={(event, editor) => {
+                              const data = editor.getData();
+                              setDesc(data);
+                            }}
+                          />
+                        )}
+                      </div>
                     </Col>
                   </Row>
                   <Row className="px-5 py-3">
@@ -183,9 +268,8 @@ const AddMeditation = () => {
                               <i
                                 onClick={() => {
                                   setAudio("");
-                                  if (currentAudioFile) {
-                                    imageDropzone.removeFile(currentAudioFile);
-                                  }
+                                  setAudioName("");
+                                  setCurrentAudioFile(false);
                                 }}
                                 role="button"
                                 className="far fa-times-circle icon-color text-lg"
@@ -196,7 +280,8 @@ const AddMeditation = () => {
                         <div
                           className={classnames(
                             "dropzone dropzone-single mb-3",
-                            { "d-none": audio }
+                            { "d-none": audio },
+                            { "invalid-dropzone": !audio && showError }
                           )}
                           id="dropzone-single-audio"
                         >
@@ -236,9 +321,8 @@ const AddMeditation = () => {
                               <i
                                 onClick={() => {
                                   setImage("");
-                                  if (currentImageFile) {
-                                    imageDropzone.removeFile(currentImageFile);
-                                  }
+                                  setImageName("");
+                                  setCurrentImageFile(false);
                                 }}
                                 role="button"
                                 className="far fa-times-circle icon-color text-lg"
@@ -249,7 +333,8 @@ const AddMeditation = () => {
                         <div
                           className={classnames(
                             "dropzone dropzone-single mb-3",
-                            { "d-none": image }
+                            { "d-none": image },
+                            { "invalid-dropzone": !image && showError }
                           )}
                           id="dropzone-single-image"
                         >
@@ -270,7 +355,7 @@ const AddMeditation = () => {
                 </Form>
                 <Row className="px-5 py-3">
                   <Col>
-                    <button className="btn addBtn">
+                    <button onClick={handleSubmit} className="btn addBtn">
                       {id ? "Update" : "Add New"}
                     </button>
                   </Col>
