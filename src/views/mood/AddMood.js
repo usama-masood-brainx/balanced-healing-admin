@@ -1,14 +1,26 @@
 import { Button, Col, Form, Input, Modal, Row } from "reactstrap";
 import React, { useEffect, useState } from "react";
-import { defaultSheet } from "shared/constants";
+import {
+  defaultSheet,
+  updateToast,
+  successToast,
+  errorToast,
+} from "shared/constants";
 import { fetchAll } from "services/sheetService";
 import { add, update } from "services/moodService";
+import SpinnerLoader from "components/Misc/Spinner";
+import toast, { Toaster } from "react-hot-toast";
 
 const AddMood = ({ moodModal, handleModalClose, moodObj }) => {
+  //form values states
   const [title, setTitle] = useState(defaultSheet.title);
   const [sheets, setSheets] = useState([]);
   const [sheet, setSheet] = useState(null);
   const [iseditingVariableSet, editingVariableSet] = useState(false);
+  const [showSpinner, setSpinner] = useState(true);
+
+  //validation states
+  const [showError, setErrorMessage] = useState(false);
 
   if ((!title || !sheet) && moodObj !== undefined && !iseditingVariableSet) {
     setTitle(moodObj.title);
@@ -24,19 +36,41 @@ const AddMood = ({ moodModal, handleModalClose, moodObj }) => {
     fetchAll(body)
       .then((data) => {
         setSheets(data.sheets);
+        setSpinner(false);
       })
       .catch((err) => console.log(err));
   };
 
-  const handleSubmit = () => {
-    if (moodObj !== undefined) {
-      update(moodObj._id, { title, sheet })
-        .then(() => handleClose())
-        .catch((err) => console.log(err));
-    } else {
-      add({ title, sheetId: sheet })
-        .then(() => handleClose())
-        .catch((err) => console.log(err));
+  const handleSubmit = async () => {
+    setSpinner(true);
+    try {
+      if (
+        moodObj !== undefined &&
+        moodObj.title === title &&
+        moodObj.sheetId === sheet
+      ) {
+        toast.success("Mood Updated Successfuly", updateToast);
+        setSpinner(false);
+        handleClose();
+        return;
+      }
+      if (!title || !sheet) {
+        setSpinner(false);
+        setErrorMessage(true);
+        return;
+      }
+      if (moodObj !== undefined) {
+        await update(moodObj._id, { title, sheet });
+        toast.success("Mood Updated Successfuly", updateToast);
+      } else {
+        await add({ title, sheetId: sheet });
+        toast.success("Mood Added Successfuly", successToast);
+      }
+      setSpinner(false);
+      handleClose();
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong", errorToast);
     }
   };
 
@@ -49,6 +83,7 @@ const AddMood = ({ moodModal, handleModalClose, moodObj }) => {
 
   return (
     <>
+      <SpinnerLoader showSpinner={showSpinner} />
       <Modal
         className="modal-dialog-centered"
         isOpen={moodModal}
@@ -72,6 +107,7 @@ const AddMood = ({ moodModal, handleModalClose, moodObj }) => {
               <Col lg="12">
                 <h4 className="headingColor">Title</h4>
                 <Input
+                  className={!title && showError ? "is-invalid" : ""}
                   placeholder="Add Title"
                   type="text"
                   value={title}
@@ -82,7 +118,11 @@ const AddMood = ({ moodModal, handleModalClose, moodObj }) => {
             <Row className="px-3">
               <Col lg="12">
                 <h4 className="headingColor">Sheet</h4>
-                <Input onChange={(e) => setSheet(e.target.value)} type="select">
+                <Input
+                  className={!sheet && showError ? "is-invalid" : ""}
+                  onChange={(e) => setSheet(e.target.value)}
+                  type="select"
+                >
                   {(!moodObj || (moodObj && !moodObj.sheet)) && (
                     <option value disabled selected>
                       Select Sheet
@@ -108,6 +148,7 @@ const AddMood = ({ moodModal, handleModalClose, moodObj }) => {
           </Button>
         </div>
       </Modal>
+      <Toaster />
     </>
   );
 };

@@ -6,12 +6,20 @@ import { fetchOne, add, update } from "services/meditationService";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import * as moment from "moment";
-import { customIcons, defaultMeditation } from "shared/constants";
+import {
+  customIcons,
+  defaultMeditation,
+  updateToast,
+  successToast,
+  errorToast,
+} from "shared/constants";
 import { uploadFile } from "services/s3Service";
 import ReactDatetime from "react-datetime";
 import Dropzone from "dropzone";
 import classnames from "classnames";
 import { useHistory } from "react-router-dom";
+import SpinnerLoader from "components/Misc/Spinner";
+import toast, { Toaster } from "react-hot-toast";
 Dropzone.autoDiscover = false;
 
 const AddMeditation = () => {
@@ -33,6 +41,7 @@ const AddMeditation = () => {
   const [imageName, setImageName] = useState("");
   const [currentImageFile, setCurrentImageFile] = useState(false);
   const [currentAudioFile, setCurrentAudioFile] = useState(false);
+  const [showSpinner, setSpinner] = useState(true);
 
   //validation states
   const [showError, setErrorMessage] = useState(false);
@@ -98,7 +107,7 @@ const AddMeditation = () => {
     };
     initializeDropzone();
     setEditorLoaded(true);
-    id && fetchMeditation();
+    id ? fetchMeditation() : setSpinner(false);
   }, []);
 
   const fetchMeditation = async () => {
@@ -112,20 +121,24 @@ const AddMeditation = () => {
         setAudio(data.audio);
         setAudioName(/[^/]*$/.exec(data.audio)[0]);
         setImageName(/[^/]*$/.exec(data.image)[0]);
+        setSpinner(false);
       })
       .catch((err) => console.log(err));
   };
 
   const handleSubmit = async (e) => {
+    setSpinner(true);
     try {
       if (
+        id &&
         meditation.title === title &&
         meditation.date === date &&
         meditation.description === desc &&
         meditation.audio === audio &&
         meditation.image === image
       ) {
-        history.push("/admin/meditations");
+        toast.success("Meditation Updated Successfuly", updateToast);
+        setSpinner(false);
         return;
       }
       if (
@@ -138,11 +151,12 @@ const AddMeditation = () => {
         (!audioChanged && !audio)
       ) {
         setErrorMessage(true);
+        setSpinner(false);
         return;
       }
-      console.log("STARTED!");
       let uploadedImage = image;
       let uploadedAudio = audio;
+      let result;
       if (imageChanged) {
         uploadedImage = await uploadFile(currentImageFile);
       }
@@ -150,7 +164,7 @@ const AddMeditation = () => {
         uploadedAudio = await uploadFile(currentAudioFile);
       }
       if (id) {
-        await update(id, {
+        result = await update(id, {
           title,
           date: moment(date).format("YYYY-MM-DD"),
           description: desc,
@@ -158,14 +172,7 @@ const AddMeditation = () => {
           audio: uploadedAudio,
         });
       } else {
-        console.log({
-          title,
-          date: moment(date).format("YYYY-MM-DD"),
-          description: desc,
-          image: uploadedImage,
-          audio: uploadedAudio,
-        });
-        await add({
+        result = await add({
           title,
           date: moment(date).format("YYYY-MM-DD"),
           description: desc,
@@ -173,9 +180,25 @@ const AddMeditation = () => {
           audio: uploadedAudio ? uploadedAudio : audio,
         });
       }
-      console.log("FINISHED");
+      setSpinner(false);
+      if (!result?.created) {
+        toast.error("Meditation already exists on specified Date", errorToast);
+      } else {
+        id
+          ? toast.success("Meditation Updated Successfuly", updateToast)
+          : toast.success("Meditation Added Successfuly", successToast);
+        setMeditation(defaultMeditation);
+        setDesc(defaultMeditation.description);
+        setTitle(defaultMeditation.title);
+        setDate(defaultMeditation.date);
+        setImage(defaultMeditation.image);
+        setAudio(defaultMeditation.audio);
+        setAudioName("");
+        setImageName("");
+      }
     } catch (err) {
       console.log(err);
+      toast.error("Something went wrong", errorToast);
     }
   };
 
@@ -193,6 +216,7 @@ const AddMeditation = () => {
 
   return (
     <>
+      <SpinnerLoader showSpinner={showSpinner} />
       <SimpleHeader name={id ? "Edit Meditation" : "Add Meditation"} />
       <Container className="mt--6" fluid>
         <Row>
@@ -365,6 +389,7 @@ const AddMeditation = () => {
           </div>
         </Row>
       </Container>
+      <Toaster />
     </>
   );
 };

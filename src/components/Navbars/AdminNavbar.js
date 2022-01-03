@@ -56,7 +56,10 @@ function AdminNavbar({ theme }) {
             role="button"
             className="mx-5 text-white"
             onClick={() => {
-              if (history.location.pathname.startsWith("/admin/meditation/")) {
+              if (
+                history.location.pathname.startsWith("/admin/meditation/") ||
+                history.location.pathname.startsWith("/admin/add-meditation")
+              ) {
                 history.push("/admin/meditations");
               } else {
                 history.push("/admin/sheets");

@@ -29,6 +29,8 @@ function MoodsTable() {
   const [currentPage, setPage] = useState(1);
   const [moodModal, showMoodModal] = useState(false);
   const [editMoodObj, setEditMoodObj] = useState(undefined);
+  const [search, setSearch] = useState("");
+
   React.useEffect(() => {
     fetchMoods({ skip: 0, take: pageSize });
   }, []);
@@ -47,7 +49,7 @@ function MoodsTable() {
     for (let i = 1; i <= Math.ceil(count / pageSize); i++) {
       pagesArr.push(
         <PaginationItem className={currentPage === i ? "active" : ""}>
-          <PaginationLink href="#pablo" onClick={(e) => handlePageClick(e, i)}>
+          <PaginationLink onClick={(e) => handlePageClick(e, i)}>
             {i}
           </PaginationLink>
         </PaginationItem>
@@ -68,6 +70,15 @@ function MoodsTable() {
     setEditMoodObj(undefined);
   };
 
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+    fetchMoods({
+      skip: (currentPage - 1) * pageSize,
+      take: pageSize,
+      ...(e.target.value && { search: e.target.value }),
+    });
+  };
+
   return (
     <>
       <SimpleHeader
@@ -86,6 +97,8 @@ function MoodsTable() {
                   className="d-inline-block searchBox"
                   placeholder="Search Title"
                   type="text"
+                  value={search}
+                  onChange={handleSearch}
                 />
               </CardHeader>
               <div className="table-responsive">
@@ -106,7 +119,7 @@ function MoodsTable() {
                         </td>
                         <td className="default-color">{mood.title}</td>
                         <td>{mood.sheet ? mood.sheet.title : "N/A"}</td>
-                        <td className="d-flex align-items-center justify-content-end pr-6">
+                        <td>
                           <UncontrolledDropdown>
                             <DropdownToggle
                               className="btn-icon-only text-light action-bg"

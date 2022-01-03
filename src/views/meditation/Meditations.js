@@ -20,6 +20,7 @@ import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { fetchAll, remove } from "services/meditationService";
 import * as moment from "moment";
 import { useHistory } from "react-router-dom";
+import SpinnerLoader from "components/Misc/Spinner";
 
 function MeditationTable() {
   const pageSize = 10;
@@ -27,15 +28,20 @@ function MeditationTable() {
   const [meditations, setMeditations] = useState([]);
   const [count, setCount] = useState(0);
   const [currentPage, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [showSpinner, setSpinner] = useState(true);
+
   React.useEffect(() => {
     fetchMeditations({ skip: 0, take: pageSize });
   }, []);
 
   const fetchMeditations = async (body) => {
+    setSpinner(true);
     fetchAll(body)
       .then((data) => {
         setMeditations(data.meditations);
         setCount(data.count);
+        setSpinner(false);
       })
       .catch((err) => console.log(err));
   };
@@ -45,7 +51,7 @@ function MeditationTable() {
     for (let i = 1; i <= Math.ceil(count / pageSize); i++) {
       pagesArr.push(
         <PaginationItem className={currentPage === i ? "active" : ""}>
-          <PaginationLink href="#pablo" onClick={(e) => handlePageClick(e, i)}>
+          <PaginationLink onClick={(e) => handlePageClick(e, i)}>
             {i}
           </PaginationLink>
         </PaginationItem>
@@ -60,8 +66,18 @@ function MeditationTable() {
     setPage(pageNumber);
   };
 
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+    fetchMeditations({
+      skip: (currentPage - 1) * pageSize,
+      take: pageSize,
+      ...(e.target.value && { search: e.target.value }),
+    });
+  };
+
   return (
     <>
+      <SpinnerLoader showSpinner={showSpinner} />
       <SimpleHeader name="Meditations" />
       <Container className="mt--6" fluid>
         <Row>
@@ -73,6 +89,8 @@ function MeditationTable() {
                   className="d-inline-block searchBox"
                   placeholder="Search Title"
                   type="text"
+                  value={search}
+                  onChange={handleSearch}
                 />
               </CardHeader>
               <div className="table-responsive">
@@ -153,6 +171,7 @@ function MeditationTable() {
                               <DropdownItem
                                 onClick={(e) => {
                                   e.preventDefault();
+                                  setSpinner(true);
                                   remove(meditation._id).then(() =>
                                     fetchMeditations({
                                       skip: (currentPage - 1) * pageSize,

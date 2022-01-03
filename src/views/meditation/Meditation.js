@@ -7,22 +7,30 @@ import { useParams } from "react-router-dom";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { customIcons } from "shared/constants";
+import SpinnerLoader from "components/Misc/Spinner";
 
 function Meditation() {
   const { id } = useParams();
   const [meditation, setMeditation] = useState({});
+  const [showSpinner, setSpinner] = useState(true);
+
   React.useEffect(() => {
     fetchMeditation();
   }, []);
 
   const fetchMeditation = async () => {
+    setSpinner(true);
     fetchOne(id)
-      .then((data) => setMeditation(data))
+      .then((data) => {
+        setMeditation(data);
+        setSpinner(false);
+      })
       .catch((err) => console.log(err));
   };
 
   return (
     <>
+      <SpinnerLoader showSpinner={showSpinner} />
       <SimpleHeader name="Meditation" />
       <Container className="mt--6" fluid>
         <Row>
@@ -58,6 +66,7 @@ function Meditation() {
                       <Row>
                         <Col lg="8" md="12">
                           <AudioPlayer
+                            autoPlay={false}
                             customIcons={customIcons}
                             showJumpControls={false}
                             src={meditation.audio}

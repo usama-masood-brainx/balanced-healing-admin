@@ -3,9 +3,14 @@ import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { Card, CardHeader, Container, Row, Col, Input, Form } from "reactstrap";
 import { useParams, useHistory } from "react-router-dom";
 import { fetchOne, update, add } from "services/sheetService";
-import { defaultSheet } from "shared/constants";
-import Dropzone from "dropzone";
-Dropzone.autoDiscover = false;
+import {
+  defaultSheet,
+  updateToast,
+  successToast,
+  errorToast,
+} from "shared/constants";
+import SpinnerLoader from "components/Misc/Spinner";
+import toast, { Toaster } from "react-hot-toast";
 
 const AddMeditation = () => {
   const history = useHistory();
@@ -13,9 +18,16 @@ const AddMeditation = () => {
   const { CKEditor, ClassicEditor } = editorRef.current || {};
 
   const { id } = useParams();
+
+  //form values states
+  const [sheet, setSheet] = useState(defaultSheet);
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [title, setTitle] = useState(defaultSheet.title);
   const [desc, setDesc] = useState(defaultSheet.detail);
+  const [showSpinner, setSpinner] = useState(true);
+
+  //validation states
+  const [showError, setErrorMessage] = useState(false);
 
   useEffect(() => {
     editorRef.current = {
@@ -23,32 +35,53 @@ const AddMeditation = () => {
       ClassicEditor: require("@ckeditor/ckeditor5-build-classic"),
     };
     setEditorLoaded(true);
-    id && fetchSheet();
+    id ? fetchSheet() : setSpinner(false);
   }, []);
 
   const fetchSheet = async () => {
     fetchOne(id)
       .then((data) => {
+        setSheet(data);
         setDesc(data.detail);
         setTitle(data.title);
+        setSpinner(false);
       })
       .catch((err) => console.log(err));
   };
 
-  const handleSubmit = () => {
-    if (id) {
-      update(id, { title, detail: desc })
-        .then(() => history.push("/admin/sheets"))
-        .catch((err) => console.log(err));
-    } else {
-      add({ title, detail: desc })
-        .then(() => history.push("/admin/sheets"))
-        .catch((err) => console.log(err));
+  const handleSubmit = async () => {
+    setSpinner(true);
+    try {
+      if (id && sheet.title === title && sheet.detail === desc) {
+        toast.success("Sheet Updated Successfuly", updateToast);
+        setSpinner(false);
+        return;
+      }
+      if (!title || !desc) {
+        setSpinner(false);
+        setErrorMessage(true);
+        return;
+      }
+      if (id) {
+        await update(id, { title, detail: desc });
+        toast.success("Sheet Updated Successfuly", updateToast);
+      } else {
+        await add({ title, detail: desc });
+        toast.success("Sheet Added Successfuly", successToast);
+      }
+      setSheet(defaultSheet);
+      setDesc(defaultSheet.detail);
+      setTitle(defaultSheet.title);
+      setSpinner(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong", errorToast);
     }
   };
 
   return (
     <>
+      <SpinnerLoader showSpinner={showSpinner} />
       <SimpleHeader name={id ? "Edit Sheet" : "Add Sheet"} />
       <Container className="mt--6" fluid>
         <Row>
@@ -64,6 +97,7 @@ const AddMeditation = () => {
                     <Col lg="12">
                       <h4 className="headingColor">Title</h4>
                       <Input
+                        className={!title && showError ? "is-invalid" : ""}
                         placeholder="Add Title"
                         type="text"
                         value={title}
@@ -74,16 +108,18 @@ const AddMeditation = () => {
                   <Row className="px-5 py-3">
                     <Col lg="12">
                       <h4 className="headingColor">Description</h4>
-                      {editorLoaded && (
-                        <CKEditor
-                          editor={ClassicEditor}
-                          data={desc}
-                          onChange={(event, editor) => {
-                            const data = editor.getData();
-                            setDesc(data);
-                          }}
-                        />
-                      )}
+                      <div className={!desc && showError ? "is-invalid" : ""}>
+                        {editorLoaded && (
+                          <CKEditor
+                            editor={ClassicEditor}
+                            data={desc}
+                            onChange={(event, editor) => {
+                              const data = editor.getData();
+                              setDesc(data);
+                            }}
+                          />
+                        )}
+                      </div>
                     </Col>
                   </Row>
                 </Form>
@@ -99,6 +135,7 @@ const AddMeditation = () => {
           </div>
         </Row>
       </Container>
+      <Toaster />
     </>
   );
 };
