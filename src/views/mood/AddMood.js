@@ -66,6 +66,7 @@ const AddMood = ({ moodModal, handleModalClose, moodObj }) => {
         await add({ title, sheetId: sheet });
         toast.success("Mood Added Successfuly", successToast);
       }
+      setErrorMessage(false);
       setSpinner(false);
       handleClose();
     } catch (err) {

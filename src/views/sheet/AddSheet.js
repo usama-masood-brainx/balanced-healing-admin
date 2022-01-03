@@ -69,6 +69,7 @@ const AddMeditation = () => {
         await add({ title, detail: desc });
         toast.success("Sheet Added Successfuly", successToast);
       }
+      setErrorMessage(false);
       setSheet(defaultSheet);
       setDesc(defaultSheet.detail);
       setTitle(defaultSheet.title);

@@ -6,7 +6,7 @@ export const uploadFile = async (file) => {
     const url = await getCall("/aws/get-url");
     await axios.put(url, file, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": file.type,
       },
     });
     return url.split("?")[0];

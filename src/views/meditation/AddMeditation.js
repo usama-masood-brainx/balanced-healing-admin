@@ -187,6 +187,7 @@ const AddMeditation = () => {
         id
           ? toast.success("Meditation Updated Successfuly", updateToast)
           : toast.success("Meditation Added Successfuly", successToast);
+        setErrorMessage(false);
         setMeditation(defaultMeditation);
         setDesc(defaultMeditation.description);
         setTitle(defaultMeditation.title);
