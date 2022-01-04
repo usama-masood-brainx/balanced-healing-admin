@@ -3,7 +3,6 @@ import classnames from "classnames";
 import {
   Button,
   Card,
-  CardHeader,
   CardBody,
   FormGroup,
   Form,
@@ -18,6 +17,9 @@ import {
 import AuthHeader from "components/Headers/AuthHeader.js";
 import { login, verifyLogin } from "services/authService";
 import { useHistory } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { errorToast, updateToast } from "shared/constants";
+import SpinnerLoader from "components/Misc/Spinner";
 
 function Login() {
   const history = useHistory();
@@ -32,19 +34,27 @@ function Login() {
   const [focusedPassword, setfocusedPassword] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [showSpinner, setSpinner] = React.useState(false);
 
   const handleLogin = async () => {
-    login(email, password).then((login) => {
-      if (login) {
+    if (!email || !password) {
+      toast.error("Provide Credentials to Continue", updateToast);
+      return;
+    }
+    login(email, password)
+      .then(() => {
         history.push("/admin/meditations");
-      } else {
-        console.log("not logged in");
-      }
-    });
+        setSpinner(false);
+      })
+      .catch(() => {
+        toast.error("Invalid Email or Password", errorToast);
+        setSpinner(false);
+      });
   };
 
   return (
     <>
+      <SpinnerLoader adminView={true} showSpinner={showSpinner} />
       <AuthHeader />
       <div className="loginForm">
         <Container className="mt-n18 pb-5">
@@ -109,7 +119,13 @@ function Login() {
                         />
                       </InputGroup>
                     </FormGroup>
-                    <small className="black-color px-2">Forgot Password?</small>
+                    <small
+                      onClick={(e) => history.push("/auth/forgot-password")}
+                      className="black-color px-2"
+                      role={"button"}
+                    >
+                      Forgot Password?
+                    </small>
                     <div className="text-center">
                       <Button
                         className="default-button-background my-4"
@@ -127,6 +143,7 @@ function Login() {
           </Row>
         </Container>
       </div>
+      <Toaster />
     </>
   );
 }

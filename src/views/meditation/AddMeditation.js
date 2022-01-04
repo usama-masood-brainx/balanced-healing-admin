@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { Card, CardHeader, Container, Row, Col, Input, Form } from "reactstrap";
-import { useParams } from "react-router-dom";
 import { fetchOne, add, update } from "services/meditationService";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
@@ -17,13 +16,12 @@ import { uploadFile } from "services/s3Service";
 import ReactDatetime from "react-datetime";
 import Dropzone from "dropzone";
 import classnames from "classnames";
-import { useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import SpinnerLoader from "components/Misc/Spinner";
 import toast, { Toaster } from "react-hot-toast";
 Dropzone.autoDiscover = false;
 
 const AddMeditation = () => {
-  const history = useHistory();
   const editorRef = useRef();
   const { CKEditor, ClassicEditor } = editorRef.current || {};
   const [editorLoaded, setEditorLoaded] = useState(false);

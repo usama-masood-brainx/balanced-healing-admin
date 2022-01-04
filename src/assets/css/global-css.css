@@ -40,7 +40,8 @@
 }
 
 .default-button-background,
-.default-button-background:hover {
+.default-button-background:hover,
+.btn-info:not(:disabled):not(.disabled):active {
   background-color: #7f7fc1;
   border-color: #7f7fc1;
 }
@@ -198,6 +199,13 @@ td {
   position: absolute;
 }
 
+.spinner-admin {
+  left: 50%;
+  top: 45%;
+  z-index: 1000;
+  position: absolute;
+}
+
 .successToast {
   background: #76d89c !important;
   border-color: #76d89c !important;
@@ -217,4 +225,5 @@ td {
 .updateToast div,
 .errorToast div {
   color: white;
+  font-weight: bold;
 }

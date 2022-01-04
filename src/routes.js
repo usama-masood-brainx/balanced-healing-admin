@@ -7,28 +7,29 @@ import MoodsTable from "views/mood/Moods";
 import SheetsTable from "views/sheet/Sheets";
 import AddSheet from "views/sheet/AddSheet";
 import Sheet from "views/sheet/Sheet";
+import ResetPassword from "views/auth/ResetPassword";
 
 export const routes = [
   {
-    collapse: true,
-    name: "Auth",
-    state: "examplesCollapse",
-    views: [
-      {
-        path: "/login",
-        name: "Login",
-        miniName: "L",
-        component: Login,
-        layout: "/auth",
-      },
-      {
-        path: "/forgot-password",
-        name: "Forgot Password",
-        miniName: "FP",
-        component: ForgotPassword,
-        layout: "/auth",
-      },
-    ],
+    path: "/login",
+    name: "Login",
+    miniName: "L",
+    component: Login,
+    layout: "/auth",
+  },
+  {
+    path: "/forgot-password",
+    name: "Forgot Password",
+    miniName: "FP",
+    component: ForgotPassword,
+    layout: "/auth",
+  },
+  {
+    path: "/reset-password/:id",
+    name: "Reset Password",
+    miniName: "RP",
+    component: ResetPassword,
+    layout: "/auth",
   },
 ];
 
@@ -57,42 +58,36 @@ export const sidebarRoutes = [
   {
     path: "/meditation/:id",
     name: "Meditation",
-    icon: "ni ni-calendar-grid-58 text-red",
     component: Meditation,
     layout: "/admin",
   },
   {
     path: "/add-meditation/:id",
     name: "Edit Meditation",
-    icon: "ni ni-calendar-grid-58 text-red",
     component: AddMeditation,
     layout: "/admin",
   },
   {
     path: "/add-meditation/",
     name: "Add Meditation",
-    icon: "ni ni-calendar-grid-58 text-red",
     component: AddMeditation,
     layout: "/admin",
   },
   {
     path: "/sheet/:id",
     name: "Sheet",
-    icon: "ni ni-calendar-grid-58 text-red",
     component: Sheet,
     layout: "/admin",
   },
   {
     path: "/add-sheet/:id",
     name: "Edit Sheet",
-    icon: "ni ni-calendar-grid-58 text-red",
     component: AddSheet,
     layout: "/admin",
   },
   {
     path: "/add-sheet/",
     name: "Add Sheet",
-    icon: "ni ni-calendar-grid-58 text-red",
     component: AddSheet,
     layout: "/admin",
   },

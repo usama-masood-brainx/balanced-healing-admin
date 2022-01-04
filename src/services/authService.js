@@ -67,3 +67,39 @@ export const verifyLogin = async () => {
       });
   });
 };
+
+export const resetPassword = (email) => {
+  return new Promise((resolve, reject) => {
+    postCall("/auth/forgot-password", { email })
+      .then((data) => {
+        resolve(data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+export const validateResetLink = (link) => {
+  return new Promise((resolve, reject) => {
+    postCall("/auth/validate-reset-link", { link })
+      .then((data) => {
+        resolve(data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+export const changePasswordWithLink = (password, link) => {
+  return new Promise((resolve, reject) => {
+    postCall("/auth/change-password-with-link", { link, password })
+      .then((data) => {
+        resolve(data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};

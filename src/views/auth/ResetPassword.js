@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classnames from "classnames";
 import {
   Button,
@@ -15,31 +15,60 @@ import {
   Col,
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.js";
-import { resetPassword } from "services/authService";
-import { useHistory } from "react-router-dom";
+import {
+  validateResetLink,
+  changePasswordWithLink,
+} from "services/authService";
+import { useHistory, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { errorToast, successToast } from "shared/constants";
 import SpinnerLoader from "components/Misc/Spinner";
 
-function ForgotPassword() {
+function ResetPassword() {
   const history = useHistory();
+  const { id } = useParams();
 
-  const [focusedEmail, setfocusedEmail] = React.useState(false);
-  const [email, setEmail] = React.useState("");
-  const [showSpinner, setSpinner] = React.useState(false);
+  useEffect(() => {
+    id ? checkResetLink() : setSpinner(false);
+  }, []);
 
-  const handleSubmit = async () => {
-    setSpinner(true);
-    resetPassword(email)
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [showSpinner, setSpinner] = React.useState(true);
+  const [validLink, setValidLink] = React.useState(false);
+
+  const checkResetLink = () => {
+    validateResetLink(id)
       .then((data) => {
-        data.success
-          ? toast.success("Reset Link Sent to your Email Address", successToast)
-          : toast.error("User not Registered", errorToast);
+        data.valid
+          ? setValidLink(true)
+          : toast.error("Link not Valid", errorToast);
         setSpinner(false);
       })
-      .catch(() => {
-        toast.error("Invalid Email or Password", errorToast);
+      .catch((err) => {
+        console.log(err);
         setSpinner(false);
+        toast.error("Something went wrong", errorToast);
+      });
+  };
+
+  const handleSubmit = async () => {
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not Match!", errorToast);
+      return;
+    }
+    setSpinner(true);
+    changePasswordWithLink(password, id)
+      .then((data) => {
+        !data.success
+          ? toast.error("Password Reset Failed", errorToast)
+          : toast.success("Password reset Successfully!", successToast);
+        setSpinner(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setSpinner(false);
+        toast.error("Something went wrong", errorToast);
       });
   };
 
@@ -61,31 +90,41 @@ function ForgotPassword() {
                     />
                   </div>
                   <div className="text-center text-muted mt-4 mb-4">
-                    <h1 className="default-color">Forgot Password</h1>
+                    <h1 className="default-color">Reset Password</h1>
                     <p className="default-color">
-                      Please enter your email address and a password reset link
-                      will be sent to you or log in.
+                      Please enter your new Password in order to reset.
                     </p>
                   </div>
                   <Form role="form">
-                    <FormGroup
-                      className={classnames("mb-3", {
-                        focused: focusedEmail,
-                      })}
-                    >
+                    <FormGroup>
                       <InputGroup className="input-group-merge input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-email-83" />
+                            <i className="ni ni-lock-circle-open" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input
-                          placeholder="Email"
-                          type="email"
-                          onFocus={() => setfocusedEmail(true)}
-                          onBlur={() => setfocusedEmail(true)}
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          disabled={!validLink}
+                          placeholder="New Password"
+                          type="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup>
+                      <InputGroup className="input-group-merge input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-lock-circle-open" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          disabled={!validLink}
+                          placeholder="Confirm Password"
+                          type="password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                       </InputGroup>
                     </FormGroup>
@@ -120,4 +159,4 @@ function ForgotPassword() {
   );
 }
 
-export default ForgotPassword;
+export default ResetPassword;
