@@ -64,7 +64,7 @@ const AddMeditation = () => {
             this.removeFile(currentImageFile);
           }
           setImageName(JSON.parse(JSON.stringify(file)).upload.filename);
-          var reader = new FileReader();
+          let reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = function (e) {
             setImage(e.target.result);
@@ -89,7 +89,7 @@ const AddMeditation = () => {
             this.removeFile(currentAudioFile);
           }
           setAudioName(JSON.parse(JSON.stringify(file)).upload.filename);
-          var reader = new FileReader();
+          let reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = function (e) {
             setAudio(e.target.result);
@@ -204,7 +204,7 @@ const AddMeditation = () => {
   };
 
   const dataURLtoFile = (dataUrl, fileName) => {
-    var arr = dataUrl.split(","),
+    let arr = dataUrl.split(","),
       mime = arr[0].match(/:(.*?);/)[1],
       bstr = atob(arr[1]),
       n = bstr.length,

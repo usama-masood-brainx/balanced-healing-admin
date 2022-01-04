@@ -1,5 +1,5 @@
 import Login from "views/auth/Login.js";
-import Register from "views/auth/Register.js";
+import ForgotPassword from "views/auth/ForgotPassword";
 import MeditationsTable from "views/meditation/Meditations";
 import Meditation from "views/meditation/Meditation";
 import AddMeditation from "views/meditation/AddMeditation";
@@ -11,8 +11,7 @@ import Sheet from "views/sheet/Sheet";
 export const routes = [
   {
     collapse: true,
-    name: "Examples",
-    icon: "ni ni-ungroup text-orange",
+    name: "Auth",
     state: "examplesCollapse",
     views: [
       {
@@ -23,10 +22,10 @@ export const routes = [
         layout: "/auth",
       },
       {
-        path: "/register",
-        name: "Register",
-        miniName: "R",
-        component: Register,
+        path: "/forgot-password",
+        name: "Forgot Password",
+        miniName: "FP",
+        component: ForgotPassword,
         layout: "/auth",
       },
     ],

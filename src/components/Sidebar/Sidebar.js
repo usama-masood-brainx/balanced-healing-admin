@@ -99,7 +99,7 @@ function Sidebar({ toggleSidenav, sidenavOpen, routes, logo, rtlActive }) {
         return null;
       }
       if (prop.collapse) {
-        var st = {};
+        let st = {};
         st[prop["state"]] = !state[prop.state];
         return (
           <NavItem key={key}>
