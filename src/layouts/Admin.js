@@ -76,6 +76,7 @@ function Admin() {
           (route) =>
             route.path !== "/sheet/:id" &&
             route.path !== "/meditation/:id" &&
+            route.path !== "/change-password" &&
             !route.path.startsWith("/add-meditation") &&
             !route.path.startsWith("/add-sheet")
         )}

@@ -88,7 +88,7 @@ function MoodsTable() {
                 />
               </CardHeader>
               <div className="table-responsive">
-                <Table className="align-items-center table-flush">
+                <Table className="align-items-center">
                   <thead className="thead-light">
                     <tr>
                       <th scope="col">Sr#</th>

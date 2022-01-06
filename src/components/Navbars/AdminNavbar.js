@@ -89,7 +89,7 @@ function AdminNavbar({ theme }) {
               </Media>
             </DropdownToggle>
             <DropdownMenu right>
-              <DropdownItem onClick={(e) => e.preventDefault()}>
+              <DropdownItem onClick={(e) => history.push("/admin/change-password")}>
                 <i className="ni ni-single-02" />
                 <span>Change Password</span>
               </DropdownItem>

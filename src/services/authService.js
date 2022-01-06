@@ -103,3 +103,15 @@ export const changePasswordWithLink = (password, link) => {
       });
   });
 };
+
+export const changePassword = (oldPass, newPass) => {
+  return new Promise((resolve, reject) => {
+    authorizedPostCall("/auth/change-password", { oldPass, newPass })
+      .then((data) => {
+        resolve(data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};

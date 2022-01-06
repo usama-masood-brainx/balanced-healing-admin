@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { Card, CardHeader, Container, Row, Col, Input, Form } from "reactstrap";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { fetchOne, update, add } from "services/sheetService";
 import {
   defaultSheet,
@@ -13,10 +13,8 @@ import SpinnerLoader from "components/Misc/Spinner";
 import toast, { Toaster } from "react-hot-toast";
 
 const AddMeditation = () => {
-  const history = useHistory();
   const editorRef = useRef();
   const { CKEditor, ClassicEditor } = editorRef.current || {};
-
   const { id } = useParams();
 
   //form values states

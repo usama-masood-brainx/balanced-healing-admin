@@ -8,6 +8,7 @@ import SheetsTable from "views/sheet/Sheets";
 import AddSheet from "views/sheet/AddSheet";
 import Sheet from "views/sheet/Sheet";
 import ResetPassword from "views/auth/ResetPassword";
+import ChangePassword from "views/auth/ChangePassword";
 
 export const routes = [
   {
@@ -89,6 +90,12 @@ export const sidebarRoutes = [
     path: "/add-sheet/",
     name: "Add Sheet",
     component: AddSheet,
+    layout: "/admin",
+  },
+  {
+    path: "/change-password",
+    name: "Change Password",
+    component: ChangePassword,
     layout: "/admin",
   },
 ];
