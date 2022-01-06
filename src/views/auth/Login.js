@@ -25,9 +25,9 @@ function Login() {
   const history = useHistory();
 
   useEffect(() => {
-    verifyLogin().then(
-      (verified) => verified && history.push("/admin/meditations")
-    );
+    verifyLogin()
+      .then((verified) => verified && history.push("/admin/meditations"))
+      .catch((err) => console.log(err));
   }, []);
 
   const [focusedEmail, setfocusedEmail] = React.useState(false);
@@ -37,6 +37,7 @@ function Login() {
   const [showSpinner, setSpinner] = React.useState(false);
 
   const handleLogin = async () => {
+    setSpinner(true);
     if (!email || !password) {
       toast.error("Provide Credentials to Continue", updateToast);
       return;
@@ -50,6 +51,13 @@ function Login() {
         toast.error("Invalid Email or Password", errorToast);
         setSpinner(false);
       });
+  };
+
+  const keyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleLogin();
+    }
   };
 
   return (
@@ -95,6 +103,7 @@ function Login() {
                           onBlur={() => setfocusedEmail(true)}
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
+                          onKeyDown={keyDown}
                         />
                       </InputGroup>
                     </FormGroup>
@@ -116,6 +125,7 @@ function Login() {
                           onBlur={() => setfocusedPassword(true)}
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
+                          onKeyDown={keyDown}
                         />
                       </InputGroup>
                     </FormGroup>

@@ -135,7 +135,10 @@ const AddMeditation = () => {
         meditation.audio === audio &&
         meditation.image === image
       ) {
-        toast.success("Meditation Updated Successfuly", updateToast);
+        toast.success(
+          "Meditation Updated Successfuly xxxxxxxxxxxxxxxxxxxxxxxx",
+          updateToast
+        );
         setSpinner(false);
         return;
       }
@@ -186,6 +189,8 @@ const AddMeditation = () => {
           ? toast.success("Meditation Updated Successfuly", updateToast)
           : toast.success("Meditation Added Successfuly", successToast);
         setErrorMessage(false);
+      }
+      if (!id) {
         setMeditation(defaultMeditation);
         setDesc(defaultMeditation.description);
         setTitle(defaultMeditation.title);
@@ -240,14 +245,11 @@ const AddMeditation = () => {
                     </Col>
                     <Col lg="6" md="12">
                       <h4 className="headingColor">Date</h4>
-                      <ReactDatetime
+                      <Input
+                        type="date"
                         className={!date && showError ? "is-invalid" : ""}
-                        inputProps={{
-                          placeholder: "Add Date",
-                        }}
-                        timeFormat={false}
-                        value={date ? moment(date) : ""}
-                        onChange={(e) => setDate(e)}
+                        value={date ? moment(date).format("YYYY-MM-DD") : ""}
+                        onChange={(e) => setDate(e.target.value)}
                       />
                     </Col>
                   </Row>

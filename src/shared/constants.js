@@ -39,3 +39,9 @@ export const errorToast = {
     secondary: "red",
   },
 };
+
+export const meditationDeleteMessage = `Are you sure you want to delete this Meditation?`;
+
+export const moodDeleteMessage = `Are you sure you want to delete this Mood?`;
+
+export const sheetDeleteMessage = `Are you sure you want to delete this Sheet?<br/> This sheet might be linked with Moods`;

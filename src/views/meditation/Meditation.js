@@ -44,11 +44,11 @@ function Meditation() {
                 <div>
                   <Row className="px-5 py-3">
                     <Col lg="6" md="12">
-                      <h4 className="headingColor">Title</h4>
+                      <h3 className="headingColor-secondary">Title</h3>
                       <p className="mb-0 text-dark">{meditation.title}</p>
                     </Col>
                     <Col lg="6" md="12">
-                      <h4 className="headingColor">Date</h4>
+                      <h3 className="headingColor-secondary">Date</h3>
                       <p className="mb-0 text-dark">
                         {moment(meditation.date).format("MM/DD/YYYY")}
                       </p>
@@ -56,13 +56,18 @@ function Meditation() {
                   </Row>
                   <Row className="px-5 py-3">
                     <Col lg="12">
-                      <h4 className="headingColor">Description</h4>
-                      <p className="mb-0 text-dark">{meditation.description}</p>
+                      <h3 className="headingColor-secondary">Description</h3>
+                      <div
+                        className="mb-0"
+                        dangerouslySetInnerHTML={{
+                          __html: meditation.description,
+                        }}
+                      ></div>
                     </Col>
                   </Row>
                   <Row className="px-5 py-3">
                     <Col lg="6" md="12">
-                      <h4 className="headingColor mb-3">Attached Sound</h4>
+                      <h3 className="headingColor-secondary mb-3">Attached Sound</h3>
                       <Row>
                         <Col lg="8" md="12">
                           <AudioPlayer
@@ -76,9 +81,9 @@ function Meditation() {
                       <small>{/[^/]*$/.exec(meditation.audio)[0]}</small>
                     </Col>
                     <Col lg="6" md="12">
-                      <h4 className="headingColor mb-3">
+                      <h3 className="headingColor-secondary mb-3">
                         Attached Background Imgae
-                      </h4>
+                      </h3>
                       <img
                         src={meditation.image}
                         className="meditationImageDetail"

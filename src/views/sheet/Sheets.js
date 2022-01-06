@@ -19,6 +19,9 @@ import {
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { fetchAll, remove } from "services/sheetService";
 import { useHistory } from "react-router-dom";
+import DeleteModal from "components/Modals/deleteModal";
+import { sheetDeleteMessage } from "shared/constants";
+import SpinnerLoader from "components/Misc/Spinner";
 
 function MoodsTable() {
   const pageSize = 10;
@@ -27,6 +30,9 @@ function MoodsTable() {
   const [count, setCount] = useState(0);
   const [currentPage, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [deleteModal, showDeleteModal] = useState(false);
+  const [deleteID, setDeleteID] = useState("");
+  const [showSpinner, setSpinner] = useState(true);
 
   React.useEffect(() => {
     fetchSheets({ skip: 0, take: pageSize });
@@ -37,6 +43,7 @@ function MoodsTable() {
       .then((data) => {
         setSheets(data.sheets);
         setCount(data.count);
+        setSpinner(false);
       })
       .catch((err) => console.log(err));
   };
@@ -66,12 +73,31 @@ function MoodsTable() {
     fetchSheets({
       skip: (currentPage - 1) * pageSize,
       take: pageSize,
-      ...(e.target.value && { search: e.target.value }),
+      ...(e.target.value.trim() && { search: e.target.value.trim() }),
     });
+  };
+
+  const handleDelete = () => {
+    setSpinner(true);
+    remove(deleteID)
+      .then(() => {
+        fetchSheets({
+          skip: (currentPage - 1) * pageSize,
+          take: pageSize,
+        });
+        handleDeleteClose();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleDeleteClose = () => {
+    setDeleteID("");
+    showDeleteModal(!deleteModal);
   };
 
   return (
     <>
+      <SpinnerLoader showSpinner={showSpinner} />
       <SimpleHeader name="Sheets" />
       <Container className="mt--6" fluid>
         <Row>
@@ -88,28 +114,38 @@ function MoodsTable() {
                 />
               </CardHeader>
               <div className="table-responsive">
-                <Table className="align-items-center">
+                <Table className="dataTable align-items-center">
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">Sr#</th>
-                      <th scope="col">Title</th>
-                      <th scope="col">Description</th>
-                      <th scope="col">Action</th>
+                      <th className="pl-4 w-5" scope="col">
+                        Sr#
+                      </th>
+                      <th className="px-0 w-25" scope="col">
+                        Title
+                      </th>
+                      <th className="px-0 w-65" scope="col">
+                        Description
+                      </th>
+                      <th className="px-0 w-5" scope="col">
+                        Action
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="list">
                     {sheets.map((sheet, index) => (
                       <tr key={index}>
-                        <td>
-                          <div className="default-color pl-4">{index + 1}</div>
+                        <td className="pl-4">
+                          <div className="default-color d-flex justify-content-start align-items-center">
+                            {index + 1}
+                          </div>
                         </td>
-                        <td className="default-color">{sheet.title}</td>
-                        <td>
-                          {sheet.detail.length > 90
-                            ? sheet.detail.substring(0, 90) + "..."
-                            : sheet.detail}
+                        <td className="default-color overflowStyle pl-0 pr-4">
+                          {sheet.title}
                         </td>
-                        <td>
+                        <td className="pl-0 overflowStyle pr-4">
+                          {sheet.detail.replace(/(<([^>]+)>)/gi, "")}
+                        </td>
+                        <td className="px-0">
                           <UncontrolledDropdown>
                             <DropdownToggle
                               className="btn-icon-only text-light action-bg"
@@ -145,12 +181,8 @@ function MoodsTable() {
                               <DropdownItem
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  remove(sheet._id).then(() =>
-                                    fetchSheets({
-                                      skip: (currentPage - 1) * pageSize,
-                                      take: pageSize,
-                                    }).catch((err) => console.log(err))
-                                  );
+                                  showDeleteModal(true);
+                                  setDeleteID(sheet._id);
                                 }}
                               >
                                 <div className="d-flex align-items-center justify-content-start">
@@ -208,6 +240,12 @@ function MoodsTable() {
           </div>
         </Row>
       </Container>
+      <DeleteModal
+        open={deleteModal}
+        handleClose={handleDeleteClose}
+        handleDelete={handleDelete}
+        message={sheetDeleteMessage}
+      />
     </>
   );
 }

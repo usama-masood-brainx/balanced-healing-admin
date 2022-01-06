@@ -21,6 +21,8 @@ import { fetchAll, remove } from "services/meditationService";
 import * as moment from "moment";
 import { useHistory } from "react-router-dom";
 import SpinnerLoader from "components/Misc/Spinner";
+import DeleteModal from "components/Modals/deleteModal";
+import { meditationDeleteMessage } from "shared/constants";
 
 function MeditationTable() {
   const pageSize = 10;
@@ -30,6 +32,8 @@ function MeditationTable() {
   const [currentPage, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [showSpinner, setSpinner] = useState(true);
+  const [deleteModal, showDeleteModal] = useState(false);
+  const [deleteID, setDeleteID] = useState("");
 
   React.useEffect(() => {
     fetchMeditations({ skip: 0, take: pageSize });
@@ -71,8 +75,26 @@ function MeditationTable() {
     fetchMeditations({
       skip: (currentPage - 1) * pageSize,
       take: pageSize,
-      ...(e.target.value && { search: e.target.value }),
+      ...(e.target.value.trim() && { search: e.target.value.trim() }),
     });
+  };
+
+  const handleDelete = () => {
+    setSpinner(true);
+    remove(deleteID)
+      .then(() => {
+        fetchMeditations({
+          skip: (currentPage - 1) * pageSize,
+          take: pageSize,
+        });
+        handleDeleteClose();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleDeleteClose = () => {
+    setDeleteID("");
+    showDeleteModal(!deleteModal);
   };
 
   return (
@@ -94,28 +116,44 @@ function MeditationTable() {
                 />
               </CardHeader>
               <div className="table-responsive">
-                <Table className="align-items-center table-flush">
+                <Table className="dataTable align-items-center">
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">Sr#</th>
-                      <th scope="col">Title</th>
-                      <th scope="col">Background Image</th>
-                      <th scope="col">CREATED AT</th>
-                      <th scope="col">Description</th>
-                      <th scope="col">Sound</th>
-                      <th scope="col">Action</th>
+                      <th className="pl-4 w-5" scope="col">
+                        Sr#
+                      </th>
+                      <th className="px-0 w-15" scope="col">
+                        Title
+                      </th>
+                      <th className="px-0 w-15" scope="col">
+                        Background Image
+                      </th>
+                      <th className="px-0 w-10" scope="col">
+                        CREATED AT
+                      </th>
+                      <th className="px-0 w-30" scope="col">
+                        Description
+                      </th>
+                      <th className="px-0 w-20" scope="col">
+                        Sound
+                      </th>
+                      <th className="px-0 w-5" scope="col">
+                        Action
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="list">
                     {meditations.map((meditation, index) => (
                       <tr key={index}>
-                        <td>
-                          <div className="default-color d-flex justify-content-center align-items-center">
+                        <td className="pl-4">
+                          <div className="default-color d-flex justify-content-start align-items-center">
                             {index + 1}
                           </div>
                         </td>
-                        <td className="default-color">{meditation.title}</td>
-                        <td>
+                        <td className="default-color overflowStyle pl-0 pr-4">
+                          {meditation.title}
+                        </td>
+                        <td className="px-0">
                           <div>
                             <img
                               className="meditationImage"
@@ -124,14 +162,16 @@ function MeditationTable() {
                             />
                           </div>
                         </td>
-                        <td>{moment(meditation.date).format("MM/DD/YYYY")}</td>
-                        <td>
-                          {meditation.description.length > 90
-                            ? meditation.description.substring(0, 90) + "..."
-                            : meditation.description}
+                        <td className="px-0">
+                          {moment(meditation.date).format("MM/DD/YYYY")}
                         </td>
-                        <td>{/[^/]*$/.exec(meditation.audio)[0]}</td>
-                        <td>
+                        <td className="overflowStyle pl-0 pr-4">
+                          {meditation.description.replace(/(<([^>]+)>)/gi, "")}
+                        </td>
+                        <td className="overflowStyle pl-0 pr-4">
+                          {/[^/]*$/.exec(meditation.audio)[0]}
+                        </td>
+                        <td className="px-0">
                           <UncontrolledDropdown>
                             <DropdownToggle
                               className="btn-icon-only text-light action-bg"
@@ -171,13 +211,8 @@ function MeditationTable() {
                               <DropdownItem
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  setSpinner(true);
-                                  remove(meditation._id).then(() =>
-                                    fetchMeditations({
-                                      skip: (currentPage - 1) * pageSize,
-                                      take: pageSize,
-                                    }).catch((err) => console.log(err))
-                                  );
+                                  showDeleteModal(true);
+                                  setDeleteID(meditation._id);
                                 }}
                               >
                                 <div className="d-flex align-items-center justify-content-start">
@@ -235,6 +270,12 @@ function MeditationTable() {
           </div>
         </Row>
       </Container>
+      <DeleteModal
+        open={deleteModal}
+        handleClose={handleDeleteClose}
+        handleDelete={handleDelete}
+        message={meditationDeleteMessage}
+      />
     </>
   );
 }

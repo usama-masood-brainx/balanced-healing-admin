@@ -32,14 +32,19 @@ function Sheet() {
                 <div>
                   <Row className="px-5 py-3">
                     <Col lg="12">
-                      <h4 className="headingColor">Title</h4>
+                      <h3 className="headingColor-secondary">Title</h3>
                       <p className="mb-0 text-dark">{sheet.title}</p>
                     </Col>
                   </Row>
                   <Row className="px-5 py-3">
                     <Col lg="12">
-                      <h4 className="headingColor">Description</h4>
-                      <p className="mb-0 text-dark">{sheet.detail}</p>
+                      <h3 className="headingColor-secondary">Description</h3>
+                      <div
+                        className="mb-0"
+                        dangerouslySetInnerHTML={{
+                          __html: sheet.detail,
+                        }}
+                      ></div>
                     </Col>
                   </Row>
                 </div>

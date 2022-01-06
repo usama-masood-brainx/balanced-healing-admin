@@ -1,7 +1,7 @@
 import { Button, Col, Modal, Row } from "reactstrap";
 import React, { useEffect, useState } from "react";
 
-const deleteModal = ({ open, handleClose }) => {
+const DeleteModal = ({ open, handleClose, handleDelete, message }) => {
   return (
     <>
       <Modal
@@ -10,7 +10,7 @@ const deleteModal = ({ open, handleClose }) => {
         toggle={handleClose}
       >
         <div className="modal-header">
-          <h5 className="modal-title">Delete</h5>
+          <h5 className="modal-title">Delete Suggestion</h5>
           <button
             aria-label="Close"
             className="close"
@@ -22,16 +22,23 @@ const deleteModal = ({ open, handleClose }) => {
           </button>
         </div>
         <div className="modal-body">
-          <Row className="px-3 pb-4">
-            <Col lg="12"></Col>
+          <Row>
+            <Col lg="12">
+              <div
+              className="text-center"
+                dangerouslySetInnerHTML={{
+                  __html: message,
+                }}
+              ></div>
+            </Col>
           </Row>
         </div>
         <div className="modal-footer d-flex justify-content-end align-items-center">
-          <Button color="primary" type="button">
-            Delete
-          </Button>
           <Button onClick={handleClose} type="button">
-            Cancel
+            No
+          </Button>
+          <Button onClick={handleDelete} color="danger" type="button">
+            Yes
           </Button>
         </div>
       </Modal>
@@ -39,4 +46,4 @@ const deleteModal = ({ open, handleClose }) => {
   );
 };
 
-export default deleteModal;
+export default DeleteModal;

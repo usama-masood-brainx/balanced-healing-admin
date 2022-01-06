@@ -66,7 +66,7 @@ function AdminNavbar({ theme }) {
               }
             }}
           >
-            <i className="fa fa-long-arrow-alt-left mr-3"></i>Back
+            <i className="fa fa-arrow-left mr-3"></i>Back
           </div>
         )}
         <div className="mx-5">
@@ -89,13 +89,15 @@ function AdminNavbar({ theme }) {
               </Media>
             </DropdownToggle>
             <DropdownMenu right>
-              <DropdownItem onClick={(e) => history.push("/admin/change-password")}>
-                <i className="ni ni-single-02" />
+              <DropdownItem
+                onClick={(e) => history.push("/admin/change-password")}
+              >
+                <i className="fa fa-lock" />
                 <span>Change Password</span>
               </DropdownItem>
               <DropdownItem divider />
               <DropdownItem onClick={(e) => handleLogout(e)}>
-                <i className="ni ni-user-run" />
+                <i className="fa fa-sign-out-alt mirror" />
                 <span>Logout</span>
               </DropdownItem>
             </DropdownMenu>

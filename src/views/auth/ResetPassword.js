@@ -57,6 +57,10 @@ function ResetPassword() {
       toast.error("Passwords do not Match!", errorToast);
       return;
     }
+    if (password.length < 6) {
+      toast.error("Passwords must be atleast 6 characters", errorToast);
+      return;
+    }
     setSpinner(true);
     changePasswordWithLink(password, id)
       .then((data) => {

@@ -18,18 +18,22 @@ import {
 // core components
 import SimpleHeader from "components/Headers/SimpleHeader.js";
 import { fetchAll, remove } from "services/moodService";
-import { useHistory } from "react-router-dom";
 import AddMood from "./AddMood";
+import DeleteModal from "components/Modals/deleteModal";
+import { moodDeleteMessage } from "shared/constants";
+import SpinnerLoader from "components/Misc/Spinner";
 
 function MoodsTable() {
   const pageSize = 10;
-  const history = useHistory();
   const [moods, setMoods] = useState([]);
   const [count, setCount] = useState(0);
   const [currentPage, setPage] = useState(1);
   const [moodModal, showMoodModal] = useState(false);
+  const [deleteModal, showDeleteModal] = useState(false);
+  const [deleteID, setDeleteID] = useState("");
   const [editMoodObj, setEditMoodObj] = useState(undefined);
   const [search, setSearch] = useState("");
+  const [showSpinner, setSpinner] = useState(true);
 
   React.useEffect(() => {
     fetchMoods({ skip: 0, take: pageSize });
@@ -40,6 +44,7 @@ function MoodsTable() {
       .then((data) => {
         setMoods(data.moods);
         setCount(data.count);
+        setSpinner(false);
       })
       .catch((err) => console.log(err));
   };
@@ -75,14 +80,33 @@ function MoodsTable() {
     fetchMoods({
       skip: (currentPage - 1) * pageSize,
       take: pageSize,
-      ...(e.target.value && { search: e.target.value }),
+      ...(e.target.value.trim() && { search: e.target.value.trim() }),
     });
+  };
+
+  const handleDelete = () => {
+    setSpinner(true);
+    remove(deleteID)
+      .then(() => {
+        fetchMoods({
+          skip: (currentPage - 1) * pageSize,
+          take: pageSize,
+        });
+        handleDeleteClose();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleDeleteClose = () => {
+    setDeleteID("");
+    showDeleteModal(!deleteModal);
   };
 
   return (
     <>
+      <SpinnerLoader showSpinner={showSpinner} />
       <SimpleHeader
-        name="Meditations"
+        name="Moods"
         updateList={() =>
           fetchMoods({ skip: (currentPage - 1) * pageSize, take: pageSize })
         }
@@ -102,24 +126,38 @@ function MoodsTable() {
                 />
               </CardHeader>
               <div className="table-responsive">
-                <Table className="align-items-center table-flush">
+                <Table className="dataTable align-items-center">
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">Sr#</th>
-                      <th scope="col">Description</th>
-                      <th scope="col">Sheet</th>
-                      <th scope="col">Action</th>
+                      <th className="px-4 w-5" scope="col">
+                        Sr#
+                      </th>
+                      <th className="px-0 w-45" scope="col">
+                        Description
+                      </th>
+                      <th className="px-0 w-45" scope="col">
+                        Sheet
+                      </th>
+                      <th className="px-0 w-5" scope="col">
+                        Action
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="list">
                     {moods.map((mood, index) => (
                       <tr key={index}>
-                        <td>
-                          <div className="default-color pl-4">{index + 1}</div>
+                        <td className="pl-4">
+                          <div className="default-color d-flex justify-content-start align-items-center">
+                            {index + 1}
+                          </div>
                         </td>
-                        <td className="default-color">{mood.title}</td>
-                        <td>{mood.sheet ? mood.sheet.title : "N/A"}</td>
-                        <td>
+                        <td className="default-color overflowStyle pl-0 pr-4">
+                          {mood.title}
+                        </td>
+                        <td className="pl-0 pr-4 overflowStyle">
+                          {mood.sheet ? mood.sheet.title : "N/A"}
+                        </td>
+                        <td className="px-0">
                           <UncontrolledDropdown>
                             <DropdownToggle
                               className="btn-icon-only text-light action-bg"
@@ -145,12 +183,8 @@ function MoodsTable() {
                               <DropdownItem
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  remove(mood._id).then(() =>
-                                    fetchMoods({
-                                      skip: (currentPage - 1) * pageSize,
-                                      take: pageSize,
-                                    }).catch((err) => console.log(err))
-                                  );
+                                  showDeleteModal(true);
+                                  setDeleteID(mood._id);
                                 }}
                               >
                                 <div className="d-flex align-items-center justify-content-start">
@@ -213,6 +247,12 @@ function MoodsTable() {
         showMoodModal={showMoodModal}
         moodObj={editMoodObj}
         handleModalClose={handleModalClose}
+      />
+      <DeleteModal
+        open={deleteModal}
+        handleClose={handleDeleteClose}
+        handleDelete={handleDelete}
+        message={moodDeleteMessage}
       />
     </>
   );

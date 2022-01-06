@@ -26,6 +26,10 @@ const ChangePassword = () => {
         toast.error("Passwords do no Match!", errorToast);
         return;
       }
+      if (newPass.length < 6) {
+        toast.error("Passwords must be atleast 6 characters", errorToast);
+        return;
+      }
       setSpinner(true);
       changePassword(oldPass, newPass)
         .then((data) => {

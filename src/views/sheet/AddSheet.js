@@ -66,11 +66,11 @@ const AddMeditation = () => {
       } else {
         await add({ title, detail: desc });
         toast.success("Sheet Added Successfuly", successToast);
+        setSheet(defaultSheet);
+        setDesc(defaultSheet.detail);
+        setTitle(defaultSheet.title);
       }
       setErrorMessage(false);
-      setSheet(defaultSheet);
-      setDesc(defaultSheet.detail);
-      setTitle(defaultSheet.title);
       setSpinner(false);
     } catch (err) {
       console.log(err);
