@@ -13,12 +13,12 @@ import {
   errorToast,
 } from "shared/constants";
 import { uploadFile } from "services/s3Service";
-import ReactDatetime from "react-datetime";
 import Dropzone from "dropzone";
 import classnames from "classnames";
 import { useParams } from "react-router-dom";
 import SpinnerLoader from "components/Misc/Spinner";
 import toast, { Toaster } from "react-hot-toast";
+import { dataURLtoFile, isCorrectImageRatio } from "services/utilities";
 Dropzone.autoDiscover = false;
 
 const AddMeditation = () => {
@@ -57,16 +57,28 @@ const AddMeditation = () => {
       acceptedFiles: "image/*",
       init: function () {
         this.on("addedfile", function (file) {
-          setImageChanged(true);
-          if (currentImageFile) {
-            this.removeFile(currentImageFile);
-          }
-          setImageName(JSON.parse(JSON.stringify(file)).upload.filename);
           let reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = function (e) {
-            setImage(e.target.result);
-            setCurrentImageFile(dataURLtoFile(e.target.result, "name"));
+            const convertedFile = dataURLtoFile(e.target.result, "name");
+            isCorrectImageRatio(
+              convertedFile,
+              () => {
+                setImage(e.target.result);
+                setImageName(JSON.parse(JSON.stringify(file)).upload.filename);
+                setCurrentImageFile(convertedFile);
+                setImageChanged(true);
+                if (currentImageFile) {
+                  this.removeFile(currentImageFile);
+                }
+              },
+              () => {
+                toast.error(
+                  "Image Aspect Ratio not suitable for Mobile Devices",
+                  errorToast
+                );
+              }
+            );
           };
         });
       },
@@ -91,7 +103,8 @@ const AddMeditation = () => {
           reader.readAsDataURL(file);
           reader.onload = function (e) {
             setAudio(e.target.result);
-            setCurrentAudioFile(dataURLtoFile(e.target.result, "name"));
+            const convertedFile = dataURLtoFile(e.target.result, "name");
+            setCurrentAudioFile(convertedFile);
           };
         });
       },
@@ -204,18 +217,6 @@ const AddMeditation = () => {
       console.log(err);
       toast.error("Something went wrong", errorToast);
     }
-  };
-
-  const dataURLtoFile = (dataUrl, fileName) => {
-    let arr = dataUrl.split(","),
-      mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]),
-      n = bstr.length,
-      u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], fileName, { type: mime });
   };
 
   return (

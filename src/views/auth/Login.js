@@ -26,7 +26,11 @@ function Login() {
 
   useEffect(() => {
     verifyLogin()
-      .then((verified) => verified && history.push("/admin/meditations"))
+      .then((verified) => {
+        if (verified) {
+          location.href = `${location.origin}/admin/meditations`;
+        }
+      })
       .catch((err) => console.log(err));
   }, []);
 
@@ -44,7 +48,7 @@ function Login() {
     }
     login(email, password)
       .then(() => {
-        history.push("/admin/meditations");
+        location.href = `${location.origin}/admin/meditations`;
         setSpinner(false);
       })
       .catch(() => {
