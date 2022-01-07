@@ -86,3 +86,18 @@ export const authorizedDeleteCall = async (url) => {
       .catch((err) => reject(err));
   });
 };
+
+export const authorizedGetCall = async (url) => {
+  return new Promise((resolve, reject) => {
+    authorizedAxios
+      .get(baseURL + url, {
+        headers: {
+          authorization: "Bearer " + localStorage.getItem("access_token"),
+        },
+      })
+      .then((data) => {
+        resolve(data.data);
+      })
+      .catch((err) => reject(err));
+  });
+};
