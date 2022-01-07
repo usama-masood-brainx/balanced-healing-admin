@@ -47,7 +47,7 @@ const AddMeditation = () => {
   const [audioChanged, setAudioChanged] = useState(false);
 
   const initializeDropzone = () => {
-    new Dropzone(document.getElementById("dropzone-single-image"), {
+    const img = new Dropzone(document.getElementById("dropzone-single-image"), {
       url: "#",
       thumbnailWidth: null,
       dictDefaultMessage:
@@ -60,6 +60,9 @@ const AddMeditation = () => {
           let reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = function (e) {
+            if (currentImageFile) {
+              this.removeFile(currentImageFile);
+            }
             const convertedFile = dataURLtoFile(e.target.result, "name");
             isCorrectImageRatio(
               convertedFile,
@@ -68,11 +71,9 @@ const AddMeditation = () => {
                 setImageName(JSON.parse(JSON.stringify(file)).upload.filename);
                 setCurrentImageFile(convertedFile);
                 setImageChanged(true);
-                if (currentImageFile) {
-                  this.removeFile(currentImageFile);
-                }
               },
               () => {
+                img.removeAllFiles();
                 toast.error(
                   "Image Aspect Ratio not suitable for Mobile Devices",
                   errorToast
@@ -148,10 +149,7 @@ const AddMeditation = () => {
         meditation.audio === audio &&
         meditation.image === image
       ) {
-        toast.success(
-          "Meditation Updated Successfuly xxxxxxxxxxxxxxxxxxxxxxxx",
-          updateToast
-        );
+        toast.success("Meditation Updated Successfuly", updateToast);
         setSpinner(false);
         return;
       }
