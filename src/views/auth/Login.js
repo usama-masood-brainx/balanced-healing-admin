@@ -44,6 +44,7 @@ function Login() {
     setSpinner(true);
     if (!email || !password) {
       toast.error("Provide Credentials to Continue", updateToast);
+      setSpinner(false);
       return;
     }
     login(email, password)

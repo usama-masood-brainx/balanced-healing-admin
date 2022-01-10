@@ -253,6 +253,7 @@ function MoodsTable() {
         handleClose={handleDeleteClose}
         handleDelete={handleDelete}
         message={moodDeleteMessage}
+        title={"Delete Mood"}
       />
     </>
   );

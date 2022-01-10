@@ -169,7 +169,9 @@ function MeditationTable() {
                           {meditation.description.replace(/(<([^>]+)>)/gi, "")}
                         </td>
                         <td className="overflowStyle pl-0 pr-4">
-                          {/[^/]*$/.exec(meditation.audio)[0]}
+                          {meditation.audio
+                            ? /[^/]*$/.exec(meditation.audio)[0]
+                            : "N/A"}
                         </td>
                         <td className="px-0">
                           <UncontrolledDropdown>
@@ -275,6 +277,7 @@ function MeditationTable() {
         handleClose={handleDeleteClose}
         handleDelete={handleDelete}
         message={meditationDeleteMessage}
+        title={"Delete Meditation"}
       />
     </>
   );

@@ -11,7 +11,7 @@ authorizedAxios.interceptors.request.use(
     const decodedToken = jwtDecode(localStorage.getItem("access_token"));
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
       const data = await refreshToken();
-      config.headers["authorization"] = "Bearer" + data.accessToken;
+      config.headers["authorization"] = "Bearer " + data.accessToken;
     }
     return config;
   },

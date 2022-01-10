@@ -1,9 +1,9 @@
-import { authorizedGetCall } from "./APIsService";
+import { authorizedPostCall } from "./APIsService";
 import axios from "axios";
 
-export const uploadFile = async (file) => {
+export const uploadFile = async (file, folder) => {
   try {
-    const url = await authorizedGetCall("/aws/get-url");
+    const url = await authorizedPostCall("/aws/get-url", { folder });
     await axios.put(url, file, {
       headers: {
         "Content-Type": file.type,

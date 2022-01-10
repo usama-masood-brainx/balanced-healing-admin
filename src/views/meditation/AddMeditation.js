@@ -158,9 +158,7 @@ const AddMeditation = () => {
         !date ||
         !desc ||
         (imageChanged && !currentImageFile) ||
-        (audioChanged && !currentAudioFile) ||
-        (!imageChanged && !image) ||
-        (!audioChanged && !audio)
+        (!imageChanged && !image)
       ) {
         setErrorMessage(true);
         setSpinner(false);
@@ -170,10 +168,10 @@ const AddMeditation = () => {
       let uploadedAudio = audio;
       let result;
       if (imageChanged) {
-        uploadedImage = await uploadFile(currentImageFile);
+        uploadedImage = await uploadFile(currentImageFile, "images");
       }
       if (audioChanged) {
-        uploadedAudio = await uploadFile(currentAudioFile);
+        uploadedAudio = await uploadFile(currentAudioFile, "audios");
       }
       if (id) {
         result = await update(id, {
@@ -214,6 +212,7 @@ const AddMeditation = () => {
     } catch (err) {
       console.log(err);
       toast.error("Something went wrong", errorToast);
+      setErrorMessage(false);
     }
   };
 
@@ -304,8 +303,7 @@ const AddMeditation = () => {
                         <div
                           className={classnames(
                             "dropzone dropzone-single mb-3",
-                            { "d-none": audio },
-                            { "invalid-dropzone": !audio && showError }
+                            { "d-none": audio }
                           )}
                           id="dropzone-single-audio"
                         >

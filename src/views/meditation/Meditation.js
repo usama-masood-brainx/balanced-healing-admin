@@ -67,15 +67,21 @@ function Meditation() {
                   </Row>
                   <Row className="px-5 py-3">
                     <Col lg="6" md="12">
-                      <h3 className="headingColor-secondary mb-3">Attached Sound</h3>
+                      <h3 className="headingColor-secondary mb-3">
+                        Attached Sound
+                      </h3>
                       <Row>
                         <Col lg="8" md="12">
-                          <AudioPlayer
-                            autoPlay={false}
-                            customIcons={customIcons}
-                            showJumpControls={false}
-                            src={meditation.audio}
-                          />
+                          {meditation.audio ? (
+                            <AudioPlayer
+                              autoPlay={false}
+                              customIcons={customIcons}
+                              showJumpControls={false}
+                              src={meditation.audio}
+                            />
+                          ) : (
+                            "N/A"
+                          )}
                         </Col>
                       </Row>
                       <small>{/[^/]*$/.exec(meditation.audio)[0]}</small>

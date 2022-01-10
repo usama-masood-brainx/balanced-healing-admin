@@ -245,6 +245,7 @@ function MoodsTable() {
         handleClose={handleDeleteClose}
         handleDelete={handleDelete}
         message={sheetDeleteMessage}
+        title={"Delete Suggestion"}
       />
     </>
   );

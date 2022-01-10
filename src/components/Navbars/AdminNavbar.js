@@ -18,7 +18,7 @@ function AdminNavbar({ theme }) {
   const handleLogout = (e) => {
     history.push("/auth/login");
     e.preventDefault();
-    logout();
+    logout().catch((err) => console.log(err));
   };
 
   useEffect(() => {
