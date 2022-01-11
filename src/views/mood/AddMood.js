@@ -106,7 +106,7 @@ const AddMood = ({ moodModal, handleModalClose, moodObj }) => {
           <Form>
             <Row className="px-3 pb-4">
               <Col lg="12">
-                <h4 className="headingColor">Title</h4>
+                <h4 className="headingColor">Description</h4>
                 <Input
                   className={!title && showError ? "is-invalid" : ""}
                   placeholder="Add Title"
@@ -118,7 +118,7 @@ const AddMood = ({ moodModal, handleModalClose, moodObj }) => {
             </Row>
             <Row className="px-3">
               <Col lg="12">
-                <h4 className="headingColor">Sheet</h4>
+                <h4 className="headingColor">Suggestion Sheet</h4>
                 <Input
                   className={!sheet && showError ? "is-invalid" : ""}
                   onChange={(e) => setSheet(e.target.value)}
@@ -139,6 +139,7 @@ const AddMood = ({ moodModal, handleModalClose, moodObj }) => {
                     </option>
                   ))}
                 </Input>
+                <i className="fa fa-chevron-down"></i>
               </Col>
             </Row>
           </Form>

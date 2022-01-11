@@ -84,7 +84,9 @@ function Meditation() {
                           )}
                         </Col>
                       </Row>
-                      <small>{/[^/]*$/.exec(meditation.audio)[0]}</small>
+                      <small>
+                        {decodeURI(/[^/]*$/.exec(meditation.audio)[0])}
+                      </small>
                     </Col>
                     <Col lg="6" md="12">
                       <h3 className="headingColor-secondary mb-3">
@@ -95,7 +97,9 @@ function Meditation() {
                         className="meditationImageDetail"
                       />
                       <br />
-                      <small>{/[^/]*$/.exec(meditation.image)[0]}</small>
+                      <small>
+                        {decodeURI(/[^/]*$/.exec(meditation.image)[0])}
+                      </small>
                     </Col>
                   </Row>
                 </div>

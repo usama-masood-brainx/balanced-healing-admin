@@ -279,3 +279,18 @@
 p {
   color: black;
 }
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+}
+
+select + i.fa {
+  float: right;
+  margin-top: -30px;
+  margin-right: 5px;
+  pointer-events: none;
+  background-color: #fff;
+  padding-right: 5px;
+}

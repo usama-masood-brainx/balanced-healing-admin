@@ -63,7 +63,7 @@ const AddMeditation = () => {
             if (currentImageFile) {
               this.removeFile(currentImageFile);
             }
-            const convertedFile = dataURLtoFile(e.target.result, "name");
+            const convertedFile = dataURLtoFile(e.target.result, imageName);
             isCorrectImageRatio(
               convertedFile,
               () => {
@@ -104,7 +104,7 @@ const AddMeditation = () => {
           reader.readAsDataURL(file);
           reader.onload = function (e) {
             setAudio(e.target.result);
-            const convertedFile = dataURLtoFile(e.target.result, "name");
+            const convertedFile = dataURLtoFile(e.target.result, audioName);
             setCurrentAudioFile(convertedFile);
           };
         });
@@ -168,10 +168,16 @@ const AddMeditation = () => {
       let uploadedAudio = audio;
       let result;
       if (imageChanged) {
-        uploadedImage = await uploadFile(currentImageFile, "images");
+        uploadedImage = await uploadFile(
+          currentImageFile,
+          `images/${imageName}`
+        );
       }
       if (audioChanged) {
-        uploadedAudio = await uploadFile(currentAudioFile, "audios");
+        uploadedAudio = await uploadFile(
+          currentAudioFile,
+          `audios/${audioName}`
+        );
       }
       if (id) {
         result = await update(id, {
@@ -318,7 +324,7 @@ const AddMeditation = () => {
                           </div>
                         </div>
                       </div>
-                      <small>{audioName}</small>
+                      <small>{decodeURI(audioName)}</small>
                     </Col>
                     <Col lg="6" md="12">
                       <h4 className="headingColor mb-3">
@@ -371,7 +377,7 @@ const AddMeditation = () => {
                           </div>
                         </div>
                       </div>
-                      <small>{imageName}</small>
+                      <small>{decodeURI(imageName)}</small>
                     </Col>
                   </Row>
                 </Form>

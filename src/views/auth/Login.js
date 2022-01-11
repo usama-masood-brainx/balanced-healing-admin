@@ -113,7 +113,7 @@ function Login() {
                       </InputGroup>
                     </FormGroup>
                     <FormGroup
-                      className={classnames({
+                      className={classnames("mb-1", {
                         focused: focusedPassword,
                       })}
                     >

@@ -166,11 +166,13 @@ function MeditationTable() {
                           {moment(meditation.date).format("MM/DD/YYYY")}
                         </td>
                         <td className="overflowStyle pl-0 pr-4">
-                          {meditation.description.replace(/(<([^>]+)>)/gi, "")}
+                          {meditation.description
+                            .replace(/(<([^>]+)>)/gi, "")
+                            .replace(/&.*;/g, "")}
                         </td>
                         <td className="overflowStyle pl-0 pr-4">
                           {meditation.audio
-                            ? /[^/]*$/.exec(meditation.audio)[0]
+                            ? decodeURI(/[^/]*$/.exec(meditation.audio)[0])
                             : "N/A"}
                         </td>
                         <td className="px-0">

@@ -84,6 +84,7 @@ function AdminNavbar({ theme }) {
                 <Media className="ml-2 d-none d-lg-block">
                   <span className="mb-0 text-sm text-white font-weight-bold">
                     Admin
+                    <i className="ml-2 fa fa-chevron-down"></i>
                   </span>
                 </Media>
               </Media>

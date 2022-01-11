@@ -43,6 +43,13 @@ function ForgotPassword() {
       });
   };
 
+  const keyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
     <>
       <SpinnerLoader adminView={true} showSpinner={showSpinner} />
@@ -86,6 +93,7 @@ function ForgotPassword() {
                           onBlur={() => setfocusedEmail(true)}
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
+                          onKeyDown={keyDown}
                         />
                       </InputGroup>
                     </FormGroup>
