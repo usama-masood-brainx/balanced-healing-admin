@@ -22,7 +22,7 @@ import { Container, Row, Col } from "reactstrap";
 function AuthHeader({ title, lead }) {
   return (
     <>
-      <div className="header bg-gradient-info py-7 py-lg-8 pt-lg-9">
+      <div className="header authBackground py-7 py-lg-9 pt-lg-9">
         <Container>
           <div className="header-body text-center mb-7">
             <Row className="justify-content-center">
@@ -42,7 +42,7 @@ function AuthHeader({ title, lead }) {
             x="0"
             y="0"
           >
-            <polygon className="fill-default" points="2560 0 2560 100 0 100" />
+            <polygon className="fill-default-login" points="2560 0 2560 100 0 100" />
           </svg>
         </div>
       </div>

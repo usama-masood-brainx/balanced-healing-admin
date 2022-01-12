@@ -1,0 +1,296 @@
+@media (min-width: 1200px) {
+  .loginForm .container {
+    max-width: 1250px;
+  }
+}
+
+.loginForm .mt-n18 {
+  margin-top: -20rem !important;
+}
+
+.authBackground,
+.bg-info-bh {
+  background-color: #7f7fc1;
+}
+
+.bg-default-login {
+  background-color: #f8f8fe;
+}
+
+.fill-default-login {
+  fill: #f8f8fe;
+}
+
+.default-color,
+.icon-color,
+.active.nav-item .nav-link-text {
+  color: #293b92;
+}
+
+.nav-link-text {
+  color: black;
+}
+
+.icon-color-light {
+  color: #7f7fc1;
+}
+
+.black-color {
+  color: black;
+}
+
+.default-button-background,
+.default-button-background:hover,
+.btn-info:not(:disabled):not(.disabled):active {
+  background-color: #7f7fc1;
+  border-color: #7f7fc1;
+}
+
+.navbar-expand-end {
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+}
+
+.navbar-brand-img {
+  max-height: 2.5rem !important;
+}
+
+.navbar-expand-space {
+  justify-content: space-between !important;
+}
+
+.meditationImage {
+  height: 3rem;
+  width: 4rem;
+  object-fit: cover;
+  border-radius: 5%;
+}
+
+.meditationImageDetail {
+  height: 3.9rem;
+  width: 4rem;
+  object-fit: cover;
+}
+
+.action-bg {
+  background-color: #f4f6fb !important;
+}
+
+.rhap_additional-controls,
+.rhap_volume-controls,
+#rhap_current-time {
+  display: none !important;
+}
+
+.rhap_container {
+  background: #f9f9f9 !important;
+  border: 1px solid #dee0e4 !important;
+  border-radius: 5%;
+  box-shadow: none !important;
+}
+
+.rhap_main {
+  flex-direction: row-reverse !important;
+}
+
+.rhap_controls-section {
+  margin-top: 0 !important;
+  flex: none !important;
+}
+
+.rhap_progress-indicator {
+  background: white !important;
+  border: 1px solid black !important;
+  height: 15px !important;
+  width: 15px !important;
+  top: -5px !important;
+  margin-left: -7px !important;
+}
+
+.rhap_progress-filled {
+  background-color: #3a3a73 !important;
+}
+
+.playIcon {
+  color: #3a3a73;
+  font-size: small;
+}
+
+.rhap_main-controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content !important;
+}
+
+.rhap_total-time {
+  font-size: small !important;
+}
+
+.headingColor {
+  color: #3a3a73;
+}
+
+.headingColor-secondary {
+  color: darkblue;
+}
+
+.active.nav-item {
+  background-color: #f8f8fe;
+}
+
+.dataTable {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.dataTable td {
+  padding: 0.5rem 1rem;
+}
+
+.is-invalid .ck.ck-editor__main > .ck-editor__editable:not(.ck-focused),
+.is-invalid .ck.ck-toolbar,
+.dropzone.invalid-dropzone .dz-message,
+.rdt.is-invalid input {
+  border-color: #fb6340 !important;
+}
+
+.ck.ck-editor__main > .ck-editor__editable:not(.ck-focused),
+.ck.ck-toolbar {
+  border-color: #dee2e6 !important;
+}
+
+.dashedBorder {
+  border: 1px dashed #dee2e6;
+}
+
+.addBtn {
+  color: white;
+  background-color: #7f7fc1;
+  border-color: #7f7fc1;
+}
+
+.dropzone .dz-button {
+  color: black;
+  background: white;
+}
+
+.dz-message {
+  padding: 1rem;
+}
+
+.searchBox {
+  width: 250px;
+}
+
+.ck-editor__editable {
+  min-height: 200px;
+}
+
+.dz-preview {
+  display: none;
+}
+
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f8f8f8ad;
+  z-index: 10000;
+}
+
+.spinner {
+  left: 55%;
+  top: 50%;
+  z-index: 1000;
+  position: absolute;
+}
+
+.spinner-admin {
+  left: 49%;
+  top: 43%;
+  z-index: 1000;
+  position: absolute;
+}
+
+.successToast {
+  background: #76d89c !important;
+  border-color: #76d89c !important;
+}
+
+.updateToast {
+  background: #3a3a73 !important;
+  border-color: #3a3a73 !important;
+}
+
+.errorToast {
+  background: red !important;
+  border-color: red !important;
+}
+
+.successToast div,
+.updateToast div,
+.errorToast div {
+  color: white;
+  font-weight: bold;
+}
+
+.w-5 {
+  width: 5% !important;
+}
+
+.w-15 {
+  width: 15% !important;
+}
+
+.w-10 {
+  width: 10% !important;
+}
+
+.w-30 {
+  width: 30% !important;
+}
+
+.w-20 {
+  width: 20% !important;
+}
+
+.w-45 {
+  width: 45% !important;
+}
+
+.w-65 {
+  width: 65% !important;
+}
+
+.overflowStyle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mirror {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
+p {
+  color: black;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+}
+
+select + i.fa {
+  float: right;
+  margin-top: -30px;
+  margin-right: 5px;
+  pointer-events: none;
+  background-color: #fff;
+  padding-right: 5px;
+}
