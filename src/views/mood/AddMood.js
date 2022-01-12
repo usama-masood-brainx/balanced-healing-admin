@@ -6,7 +6,7 @@ import {
   successToast,
   errorToast,
 } from "shared/constants";
-import { fetchAll } from "services/sheetService";
+import { fetchAllNonPaged } from "services/sheetService";
 import { add, update } from "services/moodService";
 import SpinnerLoader from "components/Misc/Spinner";
 import toast, { Toaster } from "react-hot-toast";
@@ -29,13 +29,13 @@ const AddMood = ({ moodModal, handleModalClose, moodObj }) => {
   }
 
   useEffect(() => {
-    fetchSheets({ skip: 0, take: 20 });
+    fetchSheets();
   }, []);
 
-  const fetchSheets = async (body) => {
-    fetchAll(body)
+  const fetchSheets = async () => {
+    fetchAllNonPaged()
       .then((data) => {
-        setSheets(data.sheets);
+        setSheets(data);
         setSpinner(false);
       })
       .catch((err) => console.log(err));

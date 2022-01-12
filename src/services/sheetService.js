@@ -14,6 +14,14 @@ export const fetchAll = async (body) => {
   });
 };
 
+export const fetchAllNonPaged = async () => {
+  return new Promise((resolve, reject) => {
+    getCall("/sheet")
+      .then((data) => resolve(data))
+      .catch((err) => reject(err));
+  });
+};
+
 export const fetchOne = async (id) => {
   return new Promise((resolve, reject) => {
     getCall(`/sheet/${id}`)
